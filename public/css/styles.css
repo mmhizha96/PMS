@@ -1,0 +1,37 @@
+.bg-primary1 {
+    background-color: #8bbd3a;
+}
+
+.text-primary1 {
+    color: #8bbd3a;
+}
+
+.text-italic {
+    font-style: italic;
+}
+
+.strong-txt {
+    font-weight: 6px !important;
+
+}
+
+.bg-primary2 {
+    background-color: #838339;
+}
+
+.bg-primary3 {
+    background-color: #618429;
+}
+
+.bg-primary4 {
+    background-color: #fcc425;
+}
+
+.text-dark {
+    color: #2b5c2f;
+}
+
+.text-warning {
+    color: #fcc425 !important;
+
+}
