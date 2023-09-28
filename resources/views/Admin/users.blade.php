@@ -131,8 +131,8 @@
             </div>
         </div>
         <!-- /.card-header -->
-        <div class="card-body table-responsive p-0" style="height: 300px;">
-            <table class="table table-head-fixed">
+        <div class="card-body table-responsive p-0 ml-3 mr-3 mt-3">
+            <table id="example1" class="table table-head-fixed">
                 <thead>
                     <tr>
                         <th>#</th>

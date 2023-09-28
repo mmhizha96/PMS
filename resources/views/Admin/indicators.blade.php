@@ -133,7 +133,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body table-responsive p-0" style="height: 300px;">
-                    <table class="table table-head-fixed">
+                    <table id="example1" class="table table-head-fixed">
                         <thead>
                             <tr>
                                 <th>#</th>

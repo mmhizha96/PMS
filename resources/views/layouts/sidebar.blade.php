@@ -106,8 +106,8 @@
                                 </a>
 
                             </li>
-                            <li class="nav-item has-treeview">
-                                <a href="{{ route('report') }}" class="nav-link" style="color: #fff">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" style="color: #fff">
                                     <svg width="24px" viewBox="0 -0.5 25 25" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -121,10 +121,33 @@
                                     </svg>
                                     <p>
                                         Reports
-
+                                        <i class="right fas fa-angle-left"></i>
                                     </p>
                                 </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item has-treeview">
+                                        <a href="{{ route('quarter_report') }}" class="nav-link" style="color: #fff">
 
+                                            <p>
+                                                Quarterly Reports
+
+                                            </p>
+                                        </a>
+
+                                    </li>
+                                    <li class="nav-item has-treeview">
+                                        <a href="{{ route('year_report') }}" class="nav-link" style="color: #fff">
+
+                                            <p>
+                                                Yearly Reports
+
+                                            </p>
+                                        </a>
+
+                                    </li>
+
+
+                                </ul>
                             </li>
                         @endif
                         @if (Auth::user()->role_id == 2)

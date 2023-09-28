@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('content')
     <div class="row mt-2">
-
         <div class="col-md-12 container">
             @if (session('message'))
                 <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
@@ -205,7 +204,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table class="table table-bordered">
+                    <table id="example1" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th style="width: 10px">#</th>
@@ -227,7 +226,13 @@
                                     <tr>
                                         <td>{{ $key }}</td>
                                         <td> {{ $target->target_description }}</td>
-                                        <td> {{ $target->budget_value }}</td>
+                                        <td>
+                                            @if ($target->budget_value == 0)
+                                                OPEX
+                                            @else
+                                                {{ $target->budget_value }}
+                                            @endif
+                                        </td>
                                         <td> {{ $target->target_value }}</td>
                                         <td>
                                             <div class="progress bg-dark">
@@ -239,12 +244,23 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="progress bg-dark">
-                                                <div class="progress-bar progress-bar-danger"
-                                                    style="width: {{ ($target->total_expenditure / $target->budget_value) * 100 }}%">
-                                                    {{ round(($target->total_expenditure / $target->budget_value) * 100) }}%
+
+                                            @if ($target->budget_value == 0)
+                                                @if ($target->total_expenditure == null)
+                                                    0
+                                                @else
+                                                    {{ $target->total_expenditure }}
+                                                @endif
+                                            @else
+                                                <div class="progress bg-dark">
+                                                    <div class="progress-bar progress-bar-danger"
+                                                        style="width:  {{ ($target->total_expenditure / $target->budget_value) * 100 }}%">
+                                                        {{ round(($target->total_expenditure / $target->budget_value) * 100) }}%
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @endif
+
+
                                         </td>
                                         <th>
                                             <form action="{{ route('set_target') }}" class="btn btn-sm" method="post">

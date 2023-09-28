@@ -1,10 +1,3 @@
-<style>
-    .right {
-        float: right;
-        display: inline;
-    }
-</style>
-
 @extends('layouts.app')
 @section('content')
     <div class="card mt-3 ">
@@ -19,7 +12,7 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body p-0 mt-3 mr-1 ml-1">
-            <form action="{{route('filterquarterreport')}}" method="post">
+            <form action="{{ route('filteryearreport') }}" method="post">
                 @csrf
                 <div class="row p-3">
                     <div class="col-md-4">
@@ -60,9 +53,11 @@
                         <th>BUDGET </th>
                         <th>KPI TYPE</th>
                         <th>YEAR</th>
-                        <th>Quater </th>
+
                         <th>TOTAL QUARTERL PROJECTION </th>
                         <th>TOTAL EXPENDITURE</th>
+                        <th> PROGRESS</th>
+                        <th>Comment</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,18 +79,27 @@
                                 </td>
                                 <td>{{ $reportData->kpi_type }}</td>
                                 <td>{{ $reportData->year }}</td>
-                                <td>{{ $reportData->quarter_name }}</td>
+
                                 <td>{{ $reportData->total_actuals }}</td>
                                 <td>{{ $reportData->total_expenditure }}</td>
+                                <td>{{ $reportData->status }}</td>
+                                <td>{{ $reportData->comment }}</td>
                             </tr>
                         @endforeach
                     @endisset
 
+
                 </tbody>
             </table>
+
+
+         
+
         </div>
         <!-- /.card-body -->
 
     </div>
 
 @endsection
+
+

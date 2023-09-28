@@ -118,6 +118,21 @@
                                             accept=".pdf,.xlx,.csv,.docx" id="exampleInputEmail1">
 
                                     </div>
+                                    <div class="col-md-6 form-group">
+                                        <label>Is Final</label>
+                                        <br>
+                                        <input id="is_final" type="checkbox" name="is_final" id="exampleInputEmail1">
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="">Reason For Deviation</label>
+                                        <textarea id="dreason" name="reason_for_deviation" style="width: 95%;">
+
+                                        </textarea>
+                                    </div>
                                 </div>
 
 
@@ -152,8 +167,8 @@
                     </div>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body table-responsive p-0" style="height: 300px;">
-                    <table class="table table-head-fixed">
+                <div class="card-body  p-0 ml-1 mr-1 mt-3 ">
+                    <table id="example1" class="table table-head-fixed">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -240,3 +255,20 @@
         </div>
     </div>
 @endsection
+<!-- jQuery -->
+<script src="plugins/jquery/jquery.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script>
+    $(function() {
+
+
+        $("#is_final").change(function() {
+            if (this.checked) {
+                $('#dreason').show();
+            } else {
+                $('#dreason').hide();
+            }
+        });
+
+    })
+</script>

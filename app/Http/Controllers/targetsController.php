@@ -78,7 +78,8 @@ targets.target_id DESC");
             $target->save();
             $target_status = new target_status();
             $target_status->target_id = $target->target_id;
-            $target_status->status = "in progress";
+            $target_status->status = 1;
+            $target_status->comment = "not achived";
             $target_status->save();
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {

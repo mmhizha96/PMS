@@ -103,6 +103,47 @@
                 </div>
             </div>
             <!-- /.row -->
+            <div class="row">
+                <div class="card  col-md-6 container">
+                    <div class="card-header">
+                        <h3 class="card-title">Donut Chart</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="donutChart"
+                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 95%;"></canvas>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <div class="card col-md-6 container">
+                    <div class="card-header">
+                        <h3 class="card-title">BAR CHART</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="barChart"
+                                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 95%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- /.row (main row) -->
         </div><!-- /.container-fluid -->
@@ -111,3 +152,113 @@
 
     <!-- /.content-wrapper -->
 @endsection
+
+<script src="plugins/jquery/jquery.min.js"></script>
+
+<!-- ChartJS -->
+<script src="plugins/chart.js/Chart.min.js"></script>
+
+<script>
+    $(function() {
+
+        var indicators = [];
+        var targetValue = [];
+        var actuals = [];
+
+
+
+        @foreach ($target_reports as $target_repo)
+            indicators.push('{{ $target_repo->indicator }}');
+            targetValue.push('{{ $target_repo->target_value }}');
+            actuals.push('{{ $target_repo->total_actuals }}');
+        @endforeach
+
+        var pieTotal = [];
+        var pieComment = [];
+
+        @foreach ($piereportData as $pierepo)
+            pieTotal.push('{{ $pierepo->total }}');
+            pieComment.push('{{ $pierepo->comment }}');
+        @endforeach
+
+        var areaChartData = {
+
+            labels: indicators,
+            datasets: [{
+                    label: 'target',
+                    backgroundColor: '#838339',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: targetValue
+                },
+                {
+                    label: 'actuals',
+                    backgroundColor: '#8bbd3a;',
+                    borderColor: 'rgba(210, 214, 222, 1)',
+                    pointRadius: false,
+                    pointColor: 'rgba(210, 214, 222, 1)',
+                    pointStrokeColor: '#c1c7d1',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(220,220,220,1)',
+                    data: actuals
+                },
+
+
+            ]
+        }
+        var barChartCanvas = $('#barChart').get(0).getContext('2d')
+        var barChartData = $.extend(true, {}, areaChartData)
+        var temp0 = areaChartData.datasets[0]
+        var temp1 = areaChartData.datasets[1]
+        barChartData.datasets[0] = temp1
+        barChartData.datasets[1] = temp0
+
+
+
+        new Chart(barChartCanvas, {
+
+            type: 'bar',
+            data: barChartData,
+            options: {
+
+                scales: {
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            suggestedMin: 0, // minimum will be 0, unless there is a lower value.
+
+                        }
+                    }]
+                }
+            }
+
+        })
+
+        //-------------
+        // Get context with jQuery - using jQuery's .get() method.
+        var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+        var donutData = {
+            labels: pieComment,
+            datasets: [{
+                data: pieTotal,
+                backgroundColor: ['#8bbd3a;', '#838339', '#618429'],
+            }]
+        }
+        var donutOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+        }
+        //Create pie or douhnut chart
+        // You can switch between pie and douhnut using the method below.
+        new Chart(donutChartCanvas, {
+            type: 'doughnut',
+            data: donutData,
+            options: donutOptions
+        })
+
+    })
+</script>

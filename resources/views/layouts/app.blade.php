@@ -100,17 +100,28 @@
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    
     <script>
         $(function() {
 
             $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": true,
+                "pagingType": "simple",
+                "pageLength": 5,
+                "autoWidth": false,
+                "buttons": ["excel", "print"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+
+            $("#example2").DataTable({
+                "responsive": true,
+                "lengthChange": true,
                 "autoWidth": false,
                 "pagingType": "full_numbers",
                 "pageLength": 20,
                 "buttons": ["copy", "csv", "excel", "print"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
 
         });
     </script>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\actualsController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\departmentController;
 use App\Http\Controllers\indicatorsController;
 use App\Http\Controllers\quartersController;
@@ -67,13 +68,17 @@ Route::group(['middleware' => ['auth', 'pass_change']], function () {
         Route::post('/actual/delete', [actualsController::class, 'delete'])->name('delete_actual');
 
 
-        Route::get('/report', [reportsController::class, 'getReportData'])->name('report');
+        Route::get('/quarter_report', [reportsController::class, 'getQuarterlyReportData'])->name('quarter_report');
+        Route::post('/report/quarter/filter', [reportsController::class, 'filterQuarterlyReportData'])->name('filterquarterreport');
+
+        Route::get('/yearly_report', [reportsController::class, 'getYearlyReportData'])->name('year_report');
+        Route::post('/report/year/filter', [reportsController::class, 'filterYearlyReportData'])->name('filteryearreport');
     });
 
 
 
-    Route::get('/', [Controller::class, 'home'])->name('home');
-    Route::get('/home', [Controller::class, 'home']);
+    Route::get('/', [dashboardController::class, 'home'])->name('home');
+    Route::get('/home', [dashboardController::class, 'home']);
 
     Route::post('/tagerts/indicator', [targetsController::class, 'setIndicator'])->name('set_indicator');
     Route::get('/indicators', [indicatorsController::class, 'getIndicators'])->name('indicators');
