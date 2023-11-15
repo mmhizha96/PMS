@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </div>
-            @if (Auth::user()->role_id == 1)
+            @if (Auth::user()->role_id == 1 )
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
@@ -159,6 +159,47 @@
 
 
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-6 form-group">
+                                        <label for="">Department</label>
+                                        <select name="department_id" class="form-control">
+
+                                            @foreach ($departments as $department)
+                                                <option value="{{ $department->department_id }}"
+                                                    {{ $department->department_id == session('department_id') ? 'selected' : '' }}>
+                                                    {{ $department->department_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="">Indicator</label>
+                                        <select name="indicator_id" class="form-control">
+                                            @foreach ($indicators as $indicator)
+                                                <option value="{{ $indicator->indicator_id }}"
+                                                    {{ $indicator->indicator_id == session('indicator_id') ? 'selected' : '' }}>
+                                                    {{ $indicator->indicator }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 form-group">
+                                        <label>summary</label>
+                                        <input type="text" maxlength="20" class="form-control" name="target_summary"
+                                            @error('target_summary') is-invalid @enderror id="exampleInputEmail1"
+                                            placeholder="summary should be at most 20 characters">
+                                        @error('target_summary')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+
+
+
+
+                                </div>
 
 
 
@@ -213,7 +254,10 @@
                                 <th>Budget</th>
                                 <th>Target Value</th>
                                 <th> Actual Progress </th>
+
                                 <th> Expendidure Progress </th>
+                                <th>progress status</th>
+                                <th>status</th>
                                 <th>action</th>
 
                             </tr>
@@ -235,13 +279,22 @@
                                         </td>
                                         <td> {{ $target->target_value }}</td>
                                         <td>
-                                            <div class="progress bg-dark">
-                                                <div class="progress-bar progress-bar-danger"
-                                                    style="width: {{ ($target->total_actuals / $target->target_value) * 100 }}%">
-                                                    {{ round(($target->total_actuals / $target->target_value) * 100) }}%
-                                                </div>
+                                            @if ($target->target_value == 0)
+                                                @if ($target->total_actuals == null)
+                                                    0
+                                                @else
+                                                    {{ $target->total_actuals }}
+                                                @endif
+                                            @else
+                                                <div class="progress bg-dark">
+                                                    <div class="progress-bar progress-bar-danger"
+                                                        style="width: {{ ($target->total_actuals / $target->target_value) * 100 }}%">
+                                                        {{ round(($target->total_actuals / $target->target_value) * 100) }}%
+                                                    </div>
 
-                                            </div>
+                                                </div>
+                                            @endif
+
                                         </td>
                                         <td>
 
@@ -262,7 +315,20 @@
 
 
                                         </td>
-                                        <th>
+                                        <td>
+                                            {{ $target->status }}
+                                        </td>
+                                        <td>
+                                            @if ($target->target_value > $target->total_actuals)
+                                                not achived
+                                            @elseif ($target->target_value == $target->total_actuals)
+                                                achieved
+                                            @else
+                                                over achived
+                                            @endif
+                                        </td>
+                                        <td>
+
                                             <form action="{{ route('set_target') }}" class="btn btn-sm" method="post">
                                                 @csrf
                                                 <input type="hidden" name="target_description"
@@ -273,14 +339,89 @@
                                                     value="{{ $target->department_id }}">
                                                 <button class="btn btn-sm bg-primary2" type="submit">Actuals</button>
                                             </form>
+                                            @if ($target->status_code == 1)
+                                                <button class="btn btn-sm bg-primary1"data-toggle="modal"
+                                                    data-target="#mark_as_finished{{ $key }}">
+                                                    mark as complete</button>
+                                            @endif
                                             @if (Auth::user()->role_id == 1)
                                                 <button class="btn btn-sm bg-primary4" data-toggle="modal"
                                                     data-target="#modal-update{{ $key }}">update</button>
                                                 <button class="btn btn-sm bg-primary3" data-toggle="modal"
                                                     data-target="#modal-delete{{ $key }}">delete</button>
                                             @endif
-                                        </th>
+                                        </td>
                                     </tr>
+
+                                    <div class="modal fade" id="mark_as_finished{{ $key }}">
+                                        <div class="modal-dialog modal-lg bg-primary1">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">
+                                                        @if ($target->target_value >= 0 && $target->target_value > $target->total_actuals)
+                                                            Mark Target As Completed
+                                                        @else
+                                                            Confimation
+                                                        @endif
+                                                    </h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @if (!($target->target_value >= 0 && $target->target_value > $target->total_actuals))
+                                                        <p>Are you sure you wantto mark as fineshed
+                                                            {{ $target->target_description }}
+                                                            &hellip;</p>
+                                                    @endif
+
+                                                    <form action="{{ route('markAsComplete') }}" method="post">
+                                                        @csrf
+                                                        <div class="modal-body">
+                                                            <input type="hidden" name="target_id"
+                                                                value="{{ $target->target_id }}">
+                                                            <input type="hidden" name="year_id"
+                                                                value="{{ $target->year_id }}">
+                                                            <input hidden name="target_value"
+                                                                value="{{ $target->target_value }}">
+                                                            <input hidden name="total_actuals"
+                                                                value="{{ $target->total_actuals }}">
+
+                                                        </div>
+                                                        @if ($target->target_value >= 0 && $target->target_value > $target->total_actuals)
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <label for="">Reason For Deviation</label>
+                                                                    <textarea id="dreason" name="reason_for_deviation" class="form-control">
+
+                                                                </textarea>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label for="">Corrective Action </label>
+                                                                    <textarea id="dreason" name="correctrive_action" class="form-control">
+
+                                                                </textarea>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                </div>
+                                                <div class="modal-footer justify-content-between">
+                                                    <button type="button" class="btn btn-default"
+                                                        data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn1 bg-primary3">submit</button>
+                                                </div>
+                                                </form>
+
+
+
+
+
+                                            </div>
+                                            <!-- /.modal-content -->
+                                        </div>
+                                        <!-- /.modal-dialog -->
+                                    </div>
 
                                     <div class="modal fade" id="modal-delete{{ $key }}">
                                         <div class="modal-dialog modal-md bg-primary1">

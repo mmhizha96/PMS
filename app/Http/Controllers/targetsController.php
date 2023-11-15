@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\year;
 use App\Models\target;
-use App\Models\target_status;
+use App\Models\indicator;
+use App\Models\department;
 use Illuminate\Http\Request;
+use App\Models\target_status;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\QueryException;
 
 class targetsController extends Controller
@@ -22,10 +25,17 @@ class targetsController extends Controller
         session()->put('indicator_id', $indicator_id);
         session()->put('indicator', $indicator);
         session()->put('description', $description);
-
+        session()->put('can_create', true);
+        $request->session()->forget('indicators');
         return redirect('targets');
     }
-
+    public function setMyIndicator()
+    {
+        session()->put('indicator_id', 'all');
+        session()->put('can_create', false);
+        session()->forget('indicator');
+        return redirect('targets');
+    }
 
     public function  targets()
     {
@@ -33,24 +43,105 @@ class targetsController extends Controller
 
         $indicator_id = session()->get('indicator_id');
 
-        $targets = target::where('indicator_id', $indicator_id)->orderby('target_id', 'desc')->get();;
-        $targets = DB::select("SELECT
-targets.*,
-SUM( actuals.expenditure ) AS total_expenditure,
-SUM( actuals.actual_value ) AS total_actuals
-FROM
-targets
-LEFT JOIN actuals ON targets.target_id = actuals.target_id
-WHERE
-targets.indicator_id = $indicator_id
-GROUP BY
-targets.target_id
-ORDER BY
-targets.target_id DESC");
+        $targets = "";
+
+
+        $indicators = indicator::orderby('indicator_id', 'desc')->get();
+        $departments = department::orderby('department_id', 'desc')->get();
         $years = year::orderby('year_id', 'desc')->get();
+        if (Auth::user()->role_id == 1) {
+
+            if ($indicator_id == 'all') {
+
+                $targets = DB::select("SELECT
+                targets.*,
+                SUM( actuals.expenditure ) AS total_expenditure,
+                SUM( actuals.actual_value ) AS total_actuals,
+                target_status_codes.`status`,
+                target_status_codes.status_code
+            FROM
+                targets
+                LEFT JOIN actuals ON targets.target_id = actuals.target_id
+                INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
+                INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
+
+            GROUP BY
+                targets.target_id
+            ORDER BY
+                targets.target_id DESC");
+            } else {
+
+                $targets = DB::select("SELECT
+        targets.*,
+        SUM( actuals.expenditure ) AS total_expenditure,
+        SUM( actuals.actual_value ) AS total_actuals,
+        target_status_codes.`status`,
+        target_status_codes.status_code
+    FROM
+        targets
+        LEFT JOIN actuals ON targets.target_id = actuals.target_id
+        INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
+        INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
+    WHERE
+        targets.indicator_id = $indicator_id
+    GROUP BY
+        targets.target_id
+    ORDER BY
+        targets.target_id DESC
+        ");
+            }
+        } else {
+            if ($indicator_id == 'all') {
+
+                $department_id = Auth::user()->department_id;
+
+                $targets = DB::select("SELECT
+                targets.*,
+                SUM( actuals.expenditure ) AS total_expenditure,
+                SUM( actuals.actual_value ) AS total_actuals,
+                target_status_codes.`status`,
+                target_status_codes.status_code
+            FROM
+                targets
+                LEFT JOIN actuals ON targets.target_id = actuals.target_id
+                INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
+                INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
+            WHERE
+                targets.department_id = $department_id
+            GROUP BY
+                targets.target_id
+            ORDER BY
+                targets.target_id DESC");
+            } else {
+
+                $targets = DB::select("SELECT
+        targets.*,
+        SUM( actuals.expenditure ) AS total_expenditure,
+        SUM( actuals.actual_value ) AS total_actuals,
+        target_status_codes.`status`,
+        target_status_codes.status_code
+    FROM
+        targets
+        LEFT JOIN actuals ON targets.target_id = actuals.target_id
+        INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
+        INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
+    WHERE
+        targets.indicator_id = $indicator_id
+    GROUP BY
+        targets.target_id
+    ORDER BY
+        targets.target_id DESC
+        ");
+            }
+        }
+
+
+
 
         return view('admin.targets')->with([
             'targets' => $targets,
+            'indicators' => $indicators,
+            'departments' => $departments,
             'years' => $years
 
         ]);
@@ -59,13 +150,11 @@ targets.target_id DESC");
     public function store(Request $request)
     {
 
-        $request->validate(['year_id' => 'required', 'target_description' => 'required|string', 'budget_value' => 'required', 'target_value' => 'required']);
+        $request->validate(['year_id' => 'required', 'indicator_id' => 'required', 'department_id' => 'required', 'target_description' => 'required|string', 'budget_value' => 'required', 'target_value' => 'required']);
 
-        $indicator_id = session()->get('indicator_id');
-        $department_id = session()->get('department_id');
+        $indicator_id = $request->input('indicator_id');
+        $department_id = $request->input('department_id');
         $target = new target();
-
-
         try {
             $target->year_id = $request->input('year_id');
             $target->target_description = $request->input('target_description');
@@ -78,8 +167,7 @@ targets.target_id DESC");
             $target->save();
             $target_status = new target_status();
             $target_status->target_id = $target->target_id;
-            $target_status->status = 1;
-            $target_status->comment = "not achived";
+            $target_status->status_code = 1;
             $target_status->save();
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {
@@ -99,9 +187,9 @@ targets.target_id DESC");
 
 
 
-        $targets = target::where('indicator_id', $indicator_id)->orderby('target_id', 'desc')->get();
+
         return redirect()->back()->with([
-            'targets' =>  $targets,
+
             'message' => 'targets created successfully!',
             'status' => 'success'
         ]);
@@ -143,9 +231,9 @@ targets.target_id DESC");
 
 
 
-        $targets = target::where('indicator_id', $indicator_id)->orderby('target_id', 'desc')->get();
+
         return redirect()->back()->with([
-            'targets' =>  $targets,
+
             'message' => 'targets created successfully!',
             'status' => 'success'
         ]);
@@ -181,11 +269,64 @@ targets.target_id DESC");
 
 
 
-        $targets = target::where('indicator_id', $indicator_id)->orderby('target_id', 'desc')->get();
         return redirect()->back()->with([
-            'targets' =>  $targets,
+
             'message' => 'targets deleted successfully!',
             'status' => 'success'
         ]);
+    }
+
+
+    public function markAsComplete(Request $request)
+    {
+
+        $request->validate(['target_id' => 'required|numeric', 'target_value' => 'required', 'total_actuals' => 'required']);
+        $target_id = $request['target_id'];
+        $total_actuals = $request['total_actuals'];
+        $target_value = $request['target_value'];
+
+
+        if ($total_actuals < $target_value) {
+            $request->validate(["reason_for_deviation" => 'required', 'correctrive_action' => 'required']);
+        }
+        $target_totals = DB::select("SELECT
+      SUM( actuals.actual_value ) AS total_actuals,
+      targets.target_value
+  FROM
+      targets
+      INNER JOIN actuals ON targets.target_id = actuals.target_id
+  WHERE
+      actuals.target_id = $target_id");
+
+        $status = 0;
+        $reason_for_deviation = $request['reason_for_deviation'];
+        $corrective_action = $request['correctrive_action'];
+        $total_actuals = 0;
+        $target = target::find($target_id);
+        $target_value = $target->target_value;
+
+        if ($target_totals[0]) {
+
+            $total_actuals = $target_totals[0]->total_actuals + $request->input('actual_value');
+        } else if ($total_actuals < $target_value) {
+
+            if ($request['reason_for_deviation'] == null) {
+                return redirect()->back()->with([
+
+                    'errors' => 'reason for deviation is required',
+                    'status' => 'success'
+                ]);
+            }
+        }
+
+
+        $target_status =  target_status::where('target_id', $target_id)->first();
+        $target->corrective_action = $corrective_action;
+
+        $target_status->status_code = $status;
+        $target_status->reason_for_deviation = $reason_for_deviation;
+        $target_status->update();
+
+        return redirect()->back();
     }
 }

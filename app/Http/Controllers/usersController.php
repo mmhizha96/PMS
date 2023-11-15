@@ -40,14 +40,58 @@ class usersController extends Controller
                 'status' => 'success'
             ]);
         }
-        $users = User::join('departments', 'departments.department_id', '=', 'users.department_id')->orderby('user_id', 'desc')->get();
-        $roles = user_role::all();
-        $departments =  department::all();
+
         return redirect()->back()->with([
-            'users' => $users,
-            'roles' => $roles,
-            'departments' => $departments,
-            'message' => 'user deleted successfully!',
+
+            'message' => 'user created successfully!',
+            'status' => 'success'
+        ]);
+    }
+
+
+    public function update_users(Request $request)
+    {
+        $request->validate(['user_id' => 'required|numeric', 'name' => 'required|string', 'department_id' => 'required', 'phone' => 'required', 'role_id' => 'required|numeric']);
+        try {
+            $user = user::find($request['user_id']);
+            $user->name = $request['name'];
+            $user->role_id = $request['role_id'];
+            $user->department_id = $request['department_id'];
+
+            $user->phone = $request['phone'];
+            $user->update();
+        } catch (QueryException $ex) {
+            return redirect()->back()->with([
+
+                'errors' => $ex->getMessage(),
+                'status' => 'success'
+            ]);
+        }
+        return redirect()->back()->with([
+
+            'message' => 'user updated successfully!',
+            'status' => 'success'
+        ]);
+    }
+
+    public function activate_deactivate(Request $request)
+    {
+        $request->validate(['user_id' => 'required|numeric', 'status' => 'required|numeric']);
+
+        try {
+            $user = user::find($request['user_id']);
+            $user->status = ($request['status'] == 1) ? 0 : 1;
+            $user->update();
+        } catch (QueryException  $ex) {
+            return redirect()->back()->with([
+
+                'errors' => $ex->getMessage(),
+                'status' => 'success'
+            ]);
+        }
+        return redirect()->back()->with([
+
+            'message' => 'user updated successfully!',
             'status' => 'success'
         ]);
     }

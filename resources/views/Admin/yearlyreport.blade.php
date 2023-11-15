@@ -83,7 +83,15 @@
                                 <td>{{ $reportData->total_actuals }}</td>
                                 <td>{{ $reportData->total_expenditure }}</td>
                                 <td>{{ $reportData->status }}</td>
-                                <td>{{ $reportData->comment }}</td>
+                                <td>
+                                    @if ($reportData->total_actuals > $reportData->target_value)
+                                        over Achieved
+                                    @elseif ($reportData->total_actuals == $reportData->target_value)
+                                        Achieved
+                                    @else
+                                        not Achived
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     @endisset
@@ -93,7 +101,7 @@
             </table>
 
 
-         
+
 
         </div>
         <!-- /.card-body -->
@@ -101,5 +109,3 @@
     </div>
 
 @endsection
-
-

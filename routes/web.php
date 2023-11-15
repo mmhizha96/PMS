@@ -64,28 +64,31 @@ Route::group(['middleware' => ['auth', 'pass_change']], function () {
         Route::get('/users', [usersController::class, 'getUsers'])->name('users');
         Route::post('/create_users', [usersController::class, 'create_User'])->name('create_user');
         Route::post('/update_users', [usersController::class, 'update_users'])->name('update_users');
-
+        Route::post('/activate_deactivate', [usersController::class, 'activate_deactivate'])->name('activate_deactivate');
         Route::post('/actual/delete', [actualsController::class, 'delete'])->name('delete_actual');
-
-
-        Route::get('/quarter_report', [reportsController::class, 'getQuarterlyReportData'])->name('quarter_report');
-        Route::post('/report/quarter/filter', [reportsController::class, 'filterQuarterlyReportData'])->name('filterquarterreport');
-
-        Route::get('/yearly_report', [reportsController::class, 'getYearlyReportData'])->name('year_report');
-        Route::post('/report/year/filter', [reportsController::class, 'filterYearlyReportData'])->name('filteryearreport');
     });
 
+    Route::group(['middleware' => ['check_role']], function () {
 
+        Route::get('/', [dashboardController::class, 'home'])->name('home');
+    });
+    Route::get('/home', [dashboardController::class, 'home'])->name('admin_home');
+    Route::get('/userhome', [dashboardController::class, 'userhome'])->name('user_home');
 
-    Route::get('/', [dashboardController::class, 'home'])->name('home');
-    Route::get('/home', [dashboardController::class, 'home']);
 
     Route::post('/tagerts/indicator', [targetsController::class, 'setIndicator'])->name('set_indicator');
     Route::get('/indicators', [indicatorsController::class, 'getIndicators'])->name('indicators');
     Route::get('/targets', [targetsController::class, 'targets'])->name('targets');
+    Route::get('/setmyindicator', [targetsController::class, 'setMyIndicator'])->name('set_my_indicator');
+    Route::post('/markasfinished', [targetsController::class, 'markAsComplete'])->name('markAsComplete');
 
     Route::post('/actual/targets', [actualsController::class, 'settarget'])->name('set_target');
     Route::get('/actuals', [actualsController::class, 'actuals'])->name('actuals');
+    Route::get('/actualsToApprove', [actualsController::class, 'actualsToApprove'])->name('actualsToApprove');
+    Route::get('/quarter_report', [reportsController::class, 'getQuarterlyReportData'])->name('quarter_report');
+    Route::post('/report/quarter/filter', [reportsController::class, 'filterQuarterlyReportData'])->name('filterquarterreport');
+    Route::get('/yearly_report', [reportsController::class, 'getYearlyReportData'])->name('year_report');
+    Route::post('/report/year/filter', [reportsController::class, 'filterYearlyReportData'])->name('filteryearreport');
 
 
     Route::group(['middleware' => ['usermd']], function () {

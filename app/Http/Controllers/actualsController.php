@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\actual;
 use App\Models\target;
 use App\Models\quarter;
+use App\Models\rejected_actual;
 use App\Models\target_status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -50,6 +51,49 @@ class actualsController extends Controller
         ]);
     }
 
+    public function  actualsToApprove()
+    {
+
+
+
+        $user = Auth::user();
+        $department_id = $user->department_id;
+
+        $actuals = DB::select("SELECT
+        actuals.actual_id,
+        actuals.actual_value,
+        actuals.expenditure,
+        actuals.created_at,
+        actuals.created_by,
+        actuals.document_path,
+        actuals.actual_description,
+        target_statuses.status_code,
+        quarters.quarter_name,
+        years.`year`
+    FROM
+        targets
+        INNER JOIN actuals ON targets.target_id = actuals.target_id
+        INNER JOIN target_statuses ON targets.target_id <> target_statuses.target_id
+        INNER JOIN quarters ON actuals.quarter_id = quarters.quarter_id
+        INNER JOIN years ON quarters.year_id = years.year_id
+    WHERE
+        targets.department_id = $department_id
+        AND target_statuses.status_code <> 0
+    ORDER BY
+        actuals.actual_id DESC");
+
+
+
+
+
+        return view('user.approveActual')->with([
+            'actuals' => $actuals
+
+
+        ]);
+    }
+
+
     public function store(Request $request)
     {
 
@@ -70,55 +114,7 @@ class actualsController extends Controller
 
         try {
 
-            // update target status
-            if ($request['is_final']) {
 
-                $target_totals = DB::select("SELECT
-          SUM( actuals.actual_value ) AS total_actuals,
-          targets.target_value
-      FROM
-          targets
-          INNER JOIN actuals ON targets.target_id = actuals.target_id
-      WHERE
-          actuals.target_id = $target_id");
-
-                $status = 0;
-                $reason_for_deviation = $request['reason_for_deviation'];
-                $comment = "not achieved";
-                $total_actuals = 0;
-                $target = target::find($target_id);
-                $target_value = $target->target_value;
-
-                if ($target_totals[0]) {
-
-                    $total_actuals = $target_totals[0]->total_actuals + $request->input('actual_value');
-                }
-
-                if ($total_actuals == $target_value) {
-                    $comment == "achieved";
-                    $reason_for_deviation = "";
-                } else if ($total_actuals > $target_value) {
-                    $comment = "exceeded";
-                    $reason_for_deviation = "";
-                } else if ($total_actuals < $target_value) {
-                  
-                    if ($request['reason_for_deviation'] == null) {
-                        return redirect()->back()->with([
-
-                            'errors' => 'reason for deviation is required',
-                            'status' => 'success'
-                        ]);
-                    }
-                }
-
-
-                $target_status =  target_status::where('target_id', $target_id)->first();
-
-                $target_status->comment = $comment;
-                $target_status->status_code = $status;
-                $target_status->reason_for_deviation = $reason_for_deviation;
-                $target_status->update();
-            }
 
             $actual->actual_description = $request->input('actual_description');
             $actual->document_path = $fileName;
@@ -127,6 +123,8 @@ class actualsController extends Controller
             $actual->quarter_id = $request->input('quarter_id');
             $actual->department_id = $department_id;
             $actual->target_id = $target_id;
+            $actual->status = 0;
+            $actual->approved_by = 'none';
             $actual->year_id = $year_id;
             $actual->created_by = $user;
             $actual->save();
@@ -195,5 +193,30 @@ class actualsController extends Controller
             'message' => 'actuals uploaded successfully!',
             'status' => 'success'
         ]);
+    }
+
+    public function approve_reject(Request $request)
+    {
+        $request->validate(['actual_id' => 'required|numeric', 'status' => 'required|numeric']);
+        $actual_id = $request['actual_id'];
+        $status = $request['status'];
+        $user_email = Auth::user()->email;
+
+        if ($status == 2) {
+            $request->validate(['reason_for_rejection' => 'required|string']);
+
+            $rejected_actual = new rejected_actual();
+            $rejected_actual->reason = $request['reason_for_rejection'];
+            $rejected_actual->actual_id = $actual_id;
+            $rejected_actual->rejected_by = $user_email;
+            $rejected_actual->save();
+        }
+        $actual = actual::find($actual_id);
+
+        $actual->status = $status;
+        $actual->approved_by = $user_email;
+        $actual->updated();
+
+        return redirect()->back();
     }
 }

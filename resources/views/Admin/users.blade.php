@@ -158,23 +158,97 @@
 
 
                                 <td>
-                                    <button class="btn btn-sm bg-primary1" data-toggle="modal"
+                                    <button class="btn btn-sm bg-primary2" data-toggle="modal"
                                         data-target="#modal-update{{ $key }}">update</button>
+                                    @if ($user->status == 1)
+                                        <button class="btn btn-sm bg-primary4" data-toggle="modal"
+                                            data-target="#modal-deactivate{{ $key }}">deactivate</button>
+                                    @else
+                                        <button class="btn btn-sm bg-primary1" data-toggle="modal"
+                                            data-target="#modal-activate{{ $key }}">activate</button>
+                                    @endif
 
 
                                 </td>
                             </tr>
-                            <div class="modal fade" id="modal-update{{ $key }}">
-                                <div class="modal-dialog modal-md ">
+
+                            <div class="modal fade" id="modal-activate{{ $key }}">
+                                <div class="modal-dialog modal-md">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title">update department </h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <h4 class="modal-title">update user </h4>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
 
-                                        <form action="{{ route('update_department') }}" method="post">
+                                        <form action="{{ route('activate_deactivate') }}" method="post">
+                                            @csrf
+                                            <div class="modal-body">
+
+
+                                                <input type="hidden" name="user_id" value="{{ $user->user_id }}">
+                                                <input type="hidden" name="status" value="{{ $user->status }}">
+
+                                            </div>
+
+                                            <div class="modal-footer justify-content-between">
+                                                <button type="button" class="btn btn-default"
+                                                    data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn1 bg-primary3">update</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+                            <div class="modal fade" id="modal-deactivate{{ $key }}">
+                                <div class="modal-dialog modal-md">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">update user </h4>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <form action="{{ route('activate_deactivate') }}" method="post">
+                                            @csrf
+                                            <div class="modal-body">
+
+
+                                                <input type="hidden" name="user_id" value="{{ $user->user_id }}">
+                                                <input type="hidden" name="status" value="{{ $user->status }}">
+
+                                            </div>
+
+                                            <div class="modal-footer justify-content-between">
+                                                <button type="button" class="btn btn-default"
+                                                    data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn1 bg-primary3">update</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+
+                            <div class="modal fade" id="modal-update{{ $key }}">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">update user </h4>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <form action="{{ route('update_users') }}" method="post">
                                             @csrf
                                             <div class="modal-body">
                                                 <div class="row">
@@ -194,7 +268,8 @@
                                                             placeholder="role">
                                                             @if ($roles)
                                                                 @foreach ($roles as $role)
-                                                                    <option value="{{ $role->role_id }}">
+                                                                    <option value="{{ $role->role_id }}"
+                                                                        {{ $role->role_id == $user->role_id ? 'selected' : '' }}>
                                                                         {{ $role->role }}
                                                                     </option>
                                                                 @endforeach
@@ -216,13 +291,14 @@
 
                                                     </div>
                                                     <div class="col-md-6 form-group">
-                                                        <label>Extension</label>
+
                                                         <label>Department</label>
                                                         <select type="text" class="form-control" name="department_id"
                                                             placeholder="department">
                                                             @if ($departments)
                                                                 @foreach ($departments as $department)
-                                                                    <option value="{{ $department->department_id }}">
+                                                                    <option value="{{ $department->department_id }}"
+                                                                        {{ $department->department_id == $user->department_id ? 'selected' : '' }}>
                                                                         {{ $department->department_name }}
                                                                     </option>
                                                                 @endforeach
@@ -237,13 +313,7 @@
 
                                                 </div>
 
-                                                <div class="row">
-                                                    <div class="col-md-6 form-group">
 
-                                                        <label>Account Active</label>
-                                                        <input type="checkbox" name="status" value=true>
-                                                    </div>
-                                                </div>
 
 
 

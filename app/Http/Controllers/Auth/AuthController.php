@@ -36,8 +36,16 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required'
         ]);
+        $user = user::where('email', $credentials['email'])->first();
+        if ($user->status == 0) {
+            return back()->withErrors([
+                'email' => 'account deactivated contact your administrator for more.',
+            ])->onlyInput('email');
+        }
 
         if (Auth::attempt($credentials)) {
+
+
             $request->session()->regenerate();
             return redirect()->route('home')
                 ->withSuccess('You have successfully logged in!');
@@ -69,9 +77,10 @@ class AuthController extends Controller
         return redirect()->back()->with(['error' => 'failed to retrived your token ']);
     }
 
-public function forget_password(){
-    return view('auth.resert_password');
-}
+    public function forget_password()
+    {
+        return view('auth.resert_password');
+    }
 
     public function logout(Request $request)
     {

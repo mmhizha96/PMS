@@ -102,7 +102,7 @@
 
                                     </div>
                                     <div class="col-md-6 form-group">
-                                        <label>Actual Value</label>
+                                        <label>Actual Perfomance</label>
                                         <input type="number" class="form-control" name="actual_value"
                                             id="exampleInputEmail1">
 
@@ -118,22 +118,9 @@
                                             accept=".pdf,.xlx,.csv,.docx" id="exampleInputEmail1">
 
                                     </div>
-                                    <div class="col-md-6 form-group">
-                                        <label>Is Final</label>
-                                        <br>
-                                        <input id="is_final" type="checkbox" name="is_final" id="exampleInputEmail1">
 
-                                    </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label for="">Reason For Deviation</label>
-                                        <textarea id="dreason" name="reason_for_deviation" style="width: 95%;">
-
-                                        </textarea>
-                                    </div>
-                                </div>
 
 
 
@@ -258,17 +245,3 @@
 <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
-<script>
-    $(function() {
-
-
-        $("#is_final").change(function() {
-            if (this.checked) {
-                $('#dreason').show();
-            } else {
-                $('#dreason').hide();
-            }
-        });
-
-    })
-</script>

@@ -23,11 +23,14 @@ class indicatorsController extends Controller
 
         return redirect('indicators');
     }
+    public function setmydepartment()
+    {
+        return redirect('indicators');
+    }
 
     public function getIndicators()
     {
-
-
+    
         $department_id = (Auth::user()->role_id == 1) ? session()->get('department_id') : Auth::user()->department_id;
 
         $indicators = indicator::where('department_id', $department_id)->get();
