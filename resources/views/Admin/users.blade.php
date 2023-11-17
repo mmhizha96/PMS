@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+  <div class="container-fluid">
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">New user</h3>
@@ -131,7 +132,7 @@
             </div>
         </div>
         <!-- /.card-header -->
-        <div class="card-body table-responsive p-0 ml-3 mr-3 mt-3">
+        <div class="card-body table-responsive  ml-3 mr-3 mt-3">
             <table id="example1" class="table table-head-fixed">
                 <thead>
                     <tr>
@@ -340,4 +341,5 @@
         <!-- /.card-body -->
 
     </div>
+  </div>
 @endsection

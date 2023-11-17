@@ -7,6 +7,7 @@
 
 @extends('layouts.app')
 @section('content')
+   <div class="container-fluid">
     <div class="card mt-3 ">
         <div class="card-header">
             <h3 class="card-title">QUARTERLY PERFOMANCE REPORTS</h3>
@@ -18,7 +19,7 @@
             </div>
         </div>
         <!-- /.card-header -->
-        <div class="card-body p-0 mt-3 mr-1 ml-1">
+        <div class="card-body mt-3 mr-1 ml-1">
             <form action="{{route('filterquarterreport')}}" method="post">
                 @csrf
                 <div class="row p-3">
@@ -97,5 +98,6 @@
         <!-- /.card-body -->
 
     </div>
+   </div>
 
 @endsection

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
-    <div class="row mt-2">
-        <div class="col-md-12 container">
+    <div class="row mt-2 container-fluid">
+        <div class="col-md-12 ">
             @if (session('message'))
                 <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
                     x-transition:leave.duration.3000ms>
@@ -154,7 +154,7 @@
                     </div>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body  p-0 ml-1 mr-1 mt-3 ">
+                <div class="card-body   ml-1 mr-1 mt-3 ">
                     <table id="example1" class="table table-head-fixed">
                         <thead>
                             <tr>

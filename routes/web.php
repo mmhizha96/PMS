@@ -52,7 +52,7 @@ Route::group(['middleware' => ['auth', 'pass_change']], function () {
         Route::post('/indicators/update', [indicatorsController::class, 'update'])->name('update_indicator');
         Route::post('/indicators/delete', [indicatorsController::class, 'delete'])->name('delete_indicator');
         Route::post('/indicators/setdepartment', [indicatorsController::class, 'setDepartment'])->name('setdepartment');
-
+        Route::get('/indicators/setdepartment', [indicatorsController::class, 'setDepartmentQuick'])->name('setdepartmentquick');
 
         Route::post('/targets/create', [targetsController::class, 'store'])->name('create_target');
         Route::post('/targets/update', [targetsController::class, 'update'])->name('update_target');
@@ -85,6 +85,8 @@ Route::group(['middleware' => ['auth', 'pass_change']], function () {
     Route::post('/actual/targets', [actualsController::class, 'settarget'])->name('set_target');
     Route::get('/actuals', [actualsController::class, 'actuals'])->name('actuals');
     Route::get('/actualsToApprove', [actualsController::class, 'actualsToApprove'])->name('actualsToApprove');
+    Route::post('/approve_reject', [actualsController::class, 'approve_reject'])->name('approve_reject');
+
     Route::get('/quarter_report', [reportsController::class, 'getQuarterlyReportData'])->name('quarter_report');
     Route::post('/report/quarter/filter', [reportsController::class, 'filterQuarterlyReportData'])->name('filterquarterreport');
     Route::get('/yearly_report', [reportsController::class, 'getYearlyReportData'])->name('year_report');

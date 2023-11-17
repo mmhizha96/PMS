@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
-    <div class="row mt-2">
-        <div class="col-md-12 container">
+    <div class="row mt-2 container-fluid">
+        <div class="col-md-12 ">
             @if (session('message'))
                 <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
                     x-transition:leave.duration.3000ms>
@@ -97,6 +97,18 @@
                                         @enderror
 
                                     </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="">Department</label>
+                                        <select name="department_id" required class="form-control">
+
+                                            <option>select department</option>
+                                            @foreach ($departments as $department)
+                                                <option value="{{ $department->department_id }}"
+                                                    {{ $department->department_id == session('department_id') ? 'selected' : '' }}>
+                                                    {{ $department->department_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
 
 
@@ -132,7 +144,7 @@
                     </div>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body table-responsive p-0" style="height: 300px;">
+                <div class="card-body table-responsive " style="height: 300px;">
                     <table id="example1" class="table table-head-fixed">
                         <thead>
                             <tr>

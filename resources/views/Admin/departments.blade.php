@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
-    <div class="row mt-2">
-        <div class="col-md-12 container">
+    <div class="row mt-2 container-fluid"">
+        <div class="col-md-12 container-fluid">
             @if (session('message'))
                 <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
                     x-transition:leave.duration.3000ms>
@@ -24,7 +24,7 @@
             @endif
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">New Department{{ Auth::check() }}</h3>
+                    <h3 class="card-title">New Department</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
                         </button>
@@ -121,7 +121,7 @@
                     </div>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body table-responsive p-0 mt-3 ml-1 mr-1">
+                <div class="card-body table-responsive mt-3 ml-1 mr-1">
                     <table id="example1" class="table table-head-fixed">
                         <thead>
                             <tr>

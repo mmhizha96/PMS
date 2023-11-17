@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\quarter;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Traits;
 
 class quartersController extends Controller
 {
-    //
+    use Traits\nortification_trait;
     public function setyear(Request $request)
     {
         $request->validate(['year_id' => 'required', 'year' => 'required']);
@@ -22,7 +23,7 @@ class quartersController extends Controller
     }
     public function getQuaters()
     {
-
+        $this->fetchNortification();
 
         $year_id = session()->get('year_id');
 

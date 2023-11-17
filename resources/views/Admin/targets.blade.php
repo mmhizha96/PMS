@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </div>
-            @if (Auth::user()->role_id == 1 )
+            @if (Auth::user()->role_id == 1)
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
@@ -163,7 +163,7 @@
                                     <div class="col-md-6 form-group">
                                         <label for="">Department</label>
                                         <select name="department_id" class="form-control">
-
+                                            <option >select department</option>
                                             @foreach ($departments as $department)
                                                 <option value="{{ $department->department_id }}"
                                                     {{ $department->department_id == session('department_id') ? 'selected' : '' }}>
@@ -174,6 +174,7 @@
                                     <div class="col-md-6 form-group">
                                         <label for="">Indicator</label>
                                         <select name="indicator_id" class="form-control">
+                                            <option >select indicator</option>
                                             @foreach ($indicators as $indicator)
                                                 <option value="{{ $indicator->indicator_id }}"
                                                     {{ $indicator->indicator_id == session('indicator_id') ? 'selected' : '' }}>
@@ -328,246 +329,260 @@
                                             @endif
                                         </td>
                                         <td>
+                                            <div class="btn-group">
+                                                <svg width="35px" data-toggle="dropdown" viewBox="-0.5 0 25 25"
+                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                        stroke-linejoin="round"></g>
+                                                    <g id="SVGRepo_iconCarrier">
+                                                        <path
+                                                            d="M12 14.5C13.1046 14.5 14 13.6046 14 12.5C14 11.3954 13.1046 10.5 12 10.5C10.8954 10.5 10 11.3954 10 12.5C10 13.6046 10.8954 14.5 12 14.5Z"
+                                                            stroke="#0F0F0F" stroke-miterlimit="10"></path>
+                                                        <path
+                                                            d="M19.5 14.5C20.6046 14.5 21.5 13.6046 21.5 12.5C21.5 11.3954 20.6046 10.5 19.5 10.5C18.3954 10.5 17.5 11.3954 17.5 12.5C17.5 13.6046 18.3954 14.5 19.5 14.5Z"
+                                                            stroke="#0F0F0F" stroke-miterlimit="10"></path>
+                                                        <path
+                                                            d="M4.5 14.5C5.60457 14.5 6.5 13.6046 6.5 12.5C6.5 11.3954 5.60457 10.5 4.5 10.5C3.39543 10.5 2.5 11.3954 2.5 12.5C2.5 13.6046 3.39543 14.5 4.5 14.5Z"
+                                                            stroke="#0F0F0F" stroke-miterlimit="10"></path>
+                                                    </g>
+                                                </svg>
 
-                                            <form action="{{ route('set_target') }}" class="btn btn-sm" method="post">
-                                                @csrf
-                                                <input type="hidden" name="target_description"
-                                                    value="{{ $target->target_description }}">
-                                                <input type="hidden" name="target_id" value="{{ $target->target_id }}">
-                                                <input type="hidden" name="year_id" value="{{ $target->year_id }}">
-                                                <input type="hidden" name="department_id"
-                                                    value="{{ $target->department_id }}">
-                                                <button class="btn btn-sm bg-primary2" type="submit">Actuals</button>
-                                            </form>
-                                            @if ($target->status_code == 1)
-                                                <button class="btn btn-sm bg-primary1"data-toggle="modal"
-                                                    data-target="#mark_as_finished{{ $key }}">
-                                                    mark as complete</button>
-                                            @endif
-                                            @if (Auth::user()->role_id == 1)
-                                                <button class="btn btn-sm bg-primary4" data-toggle="modal"
-                                                    data-target="#modal-update{{ $key }}">update</button>
-                                                <button class="btn btn-sm bg-primary3" data-toggle="modal"
-                                                    data-target="#modal-delete{{ $key }}">delete</button>
-                                            @endif
-                                        </td>
-                                    </tr>
+                                                <span class="sr-only">Toggle Dropdown</span>
 
-                                    <div class="modal fade" id="mark_as_finished{{ $key }}">
-                                        <div class="modal-dialog modal-lg bg-primary1">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title">
-                                                        @if ($target->target_value >= 0 && $target->target_value > $target->total_actuals)
-                                                            Mark Target As Completed
-                                                        @else
-                                                            Confimation
-                                                        @endif
-                                                    </h4>
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    @if (!($target->target_value >= 0 && $target->target_value > $target->total_actuals))
-                                                        <p>Are you sure you wantto mark as fineshed
-                                                            {{ $target->target_description }}
-                                                            &hellip;</p>
+                                                <div class="dropdown-menu" style="margin-right: 70px" role="menu">
+
+
+                                                    @if ($target->status_code == 1)
+                                                        <button class="btn btn-sm p-1 "data-toggle="modal"
+                                                            data-target="#mark_as_finished{{ $key }}">
+                                                            mark as complete</button>
                                                     @endif
-
-                                                    <form action="{{ route('markAsComplete') }}" method="post">
+                                                    @if (Auth::user()->role_id == 1)
+                                                        <button class="btn btn-sm p-1 dropdown-item " data-toggle="modal"
+                                                            data-target="#modal-update{{ $key }}">update</button>
+                                                        <button class="btn btn-sm p-1 dropdown-item " data-toggle="modal"
+                                                            data-target="#modal-delete{{ $key }}">delete</button>
+                                                    @endif
+                                                    <form action="{{ route('set_target') }}" class="btn btn-sm"
+                                                        method="post">
                                                         @csrf
-                                                        <div class="modal-body">
-                                                            <input type="hidden" name="target_id"
-                                                                value="{{ $target->target_id }}">
-                                                            <input type="hidden" name="year_id"
-                                                                value="{{ $target->year_id }}">
-                                                            <input hidden name="target_value"
-                                                                value="{{ $target->target_value }}">
-                                                            <input hidden name="total_actuals"
-                                                                value="{{ $target->total_actuals }}">
-
-                                                        </div>
-                                                        @if ($target->target_value >= 0 && $target->target_value > $target->total_actuals)
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <label for="">Reason For Deviation</label>
-                                                                    <textarea id="dreason" name="reason_for_deviation" class="form-control">
-
-                                                                </textarea>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <label for="">Corrective Action </label>
-                                                                    <textarea id="dreason" name="correctrive_action" class="form-control">
-
-                                                                </textarea>
-                                                                </div>
-                                                            </div>
-                                                        @endif
-                                                </div>
-                                                <div class="modal-footer justify-content-between">
-                                                    <button type="button" class="btn btn-default"
-                                                        data-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn1 bg-primary3">submit</button>
-                                                </div>
-                                                </form>
+                                                        <input type="hidden" name="target_description"
+                                                            value="{{ $target->target_description }}">
+                                                        <input type="hidden" name="target_id"
+                                                            value="{{ $target->target_id }}">
+                                                        <input type="hidden" name="year_id"
+                                                            value="{{ $target->year_id }}">
+                                                        <input type="hidden" name="department_id"
+                                                            value="{{ $target->department_id }}">
+                                                        <button class="btn btn-sm dropdown-item p-0 m-0 bg-white "
+                                                            type="submit">Actuals</button>
+                                                    </form>
+                                        </td>
 
 
 
 
-
-                                            </div>
-                                            <!-- /.modal-content -->
-                                        </div>
-                                        <!-- /.modal-dialog -->
-                                    </div>
-
-                                    <div class="modal fade" id="modal-delete{{ $key }}">
-                                        <div class="modal-dialog modal-md bg-primary1">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title">Confimation </h4>
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Are you sure you want to delete this target
-                                                        {{ $target->target_description }}
-                                                        &hellip;</p>
-                                                </div>
-                                                <form action="{{ route('delete_target') }}" method="post">
-                                                    @csrf
-
-                                                    <input type="hidden" name="target_id"
-                                                        value="{{ $target->target_id }}">
-                                                    <div class="modal-footer justify-content-between">
-                                                        <button type="button" class="btn btn-default"
-                                                            data-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-danger">delete</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            <!-- /.modal-content -->
-                                        </div>
-                                        <!-- /.modal-dialog -->
-                                    </div>
+                </div>
+            </div>
 
 
+            </tr>
 
-                                    {{-- update modal --}}
-                                    <div class="modal fade" id="modal-update{{ $key }}">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title">Update Target </h4>
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-
-                                                <form action="{{ route('update_target') }}" method="post">
-                                                    @csrf
-                                                    <div class="modal-body">
-                                                        <div class="row">
-
-
-                                                            <div class="col-md-6 form-group">
-                                                                <label>Baseline</label>
-                                                                <input type="text" class="form-control"
-                                                                    name="baseline" placeholder="baseline"
-                                                                    value="{{ $target->baseline }}"
-                                                                    id="exampleInputEmail1">
-
-                                                            </div>
-                                                            <div class="col-md-6 form-group">
-                                                                <label>Project Vote Number </label>
-                                                                <input type="text" class="form-control"
-                                                                    name="project_vote_number"
-                                                                    value="{{ $target->project_vote_number }}"
-                                                                    placeholder="project vote number"
-                                                                    id="exampleInputEmail1">
-
-                                                            </div>
-
-
-
-                                                        </div>
-                                                        <div class="row">
-
-                                                            <input type="hidden" name="target_id"
-                                                                value="{{ $target->target_id }}">
-                                                            <input type="hidden" name="year_id"
-                                                                value="{{ $target->year_id }}">
-                                                            <div class="col-md-12 form-group">
-                                                                <label>Target Description</label>
-                                                                <input type="text" class="form-control"
-                                                                    value="{{ $target->target_description }}"
-                                                                    name="target_description" id="exampleInputEmail1">
-
-                                                            </div>
-
-
-
-                                                        </div>
-
-                                                        <div class="row">
-
-
-                                                            <div class="col-md-6 form-group">
-                                                                <label>Budget Value</label>
-                                                                <input type="number" class="form-control"
-                                                                    name="budget_value"
-                                                                    value="{{ $target->budget_value }}"
-                                                                    id="exampleInputEmail1">
-
-                                                            </div>
-                                                            <div class="col-md-6 form-group">
-                                                                <label>Targeted Value</label>
-                                                                <input type="number" class="form-control"
-                                                                    name="target_value"
-                                                                    value="{{ $target->target_value }}"
-                                                                    id="exampleInputEmail1">
-
-                                                            </div>
-
-
-
-                                                        </div>
-
-
-
-                                                    </div>
-
-                                                    <div class="modal-footer justify-content-between">
-                                                        <button type="button" class="btn btn-default"
-                                                            data-dismiss="modal">Close</button>
-                                                        <button type="submit"
-                                                            class="btn btn1 bg-primary3">update</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            <!-- /.modal-content -->
-                                        </div>
-                                        <!-- /.modal-dialog -->
-                                    </div>
-                                @endforeach
+            <div class="modal fade" id="mark_as_finished{{ $key }}">
+                <div class="modal-dialog modal-lg bg-primary1">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">
+                                @if ($target->target_value >= 0 && $target->target_value > $target->total_actuals)
+                                    Mark Target As Completed
+                                @else
+                                    Confimation
+                                @endif
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @if (!($target->target_value >= 0 && $target->target_value > $target->total_actuals))
+                                <p>Are you sure you wantto mark as fineshed
+                                    {{ $target->target_description }}
+                                    &hellip;</p>
                             @endif
 
+                            <form action="{{ route('markAsComplete') }}" method="post">
+                                @csrf
+                                <div class="modal-body">
+                                    <input type="hidden" name="target_id" value="{{ $target->target_id }}">
+                                    <input type="hidden" name="year_id" value="{{ $target->year_id }}">
+                                    <input hidden name="target_value" value="{{ $target->target_value }}">
+                                    <input hidden name="total_actuals" value="{{ $target->total_actuals }}">
+
+                                </div>
+                                @if ($target->target_value >= 0 && $target->target_value > $target->total_actuals)
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="">Reason For Deviation</label>
+                                            <textarea id="dreason" name="reason_for_deviation" class="form-control">
+
+                                                                </textarea>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="">Corrective Action </label>
+                                            <textarea id="dreason" name="correctrive_action" class="form-control">
+
+                                                                </textarea>
+                                        </div>
+                                    </div>
+                                @endif
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn1 bg-primary3">submit</button>
+                        </div>
+                        </form>
 
 
 
-                        </tbody>
-                    </table>
+
+
+                    </div>
+                    <!-- /.modal-content -->
                 </div>
-
+                <!-- /.modal-dialog -->
             </div>
-            <!-- /.card -->
 
-            <!-- /.card -->
+            <div class="modal fade" id="modal-delete{{ $key }}">
+                <div class="modal-dialog modal-md bg-primary1">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Confimation </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete this target
+                                {{ $target->target_description }}
+                                &hellip;</p>
+                        </div>
+                        <form action="{{ route('delete_target') }}" method="post">
+                            @csrf
+
+                            <input type="hidden" name="target_id" value="{{ $target->target_id }}">
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger">delete</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+
+
+
+            {{-- update modal --}}
+            <div class="modal fade" id="modal-update{{ $key }}">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Update Target </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <form action="{{ route('update_target') }}" method="post">
+                            @csrf
+                            <div class="modal-body">
+                                <div class="row">
+
+
+                                    <div class="col-md-6 form-group">
+                                        <label>Baseline</label>
+                                        <input type="text" class="form-control" name="baseline"
+                                            placeholder="baseline" value="{{ $target->baseline }}"
+                                            id="exampleInputEmail1">
+
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label>Project Vote Number </label>
+                                        <input type="text" class="form-control" name="project_vote_number"
+                                            value="{{ $target->project_vote_number }}" placeholder="project vote number"
+                                            id="exampleInputEmail1">
+
+                                    </div>
+
+
+
+                                </div>
+                                <div class="row">
+
+                                    <input type="hidden" name="target_id" value="{{ $target->target_id }}">
+                                    <input type="hidden" name="year_id" value="{{ $target->year_id }}">
+                                    <div class="col-md-12 form-group">
+                                        <label>Target Description</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ $target->target_description }}" name="target_description"
+                                            id="exampleInputEmail1">
+
+                                    </div>
+
+
+
+                                </div>
+
+                                <div class="row">
+
+
+                                    <div class="col-md-6 form-group">
+                                        <label>Budget Value</label>
+                                        <input type="number" class="form-control" name="budget_value"
+                                            value="{{ $target->budget_value }}" id="exampleInputEmail1">
+
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label>Targeted Value</label>
+                                        <input type="number" class="form-control" name="target_value"
+                                            value="{{ $target->target_value }}" id="exampleInputEmail1">
+
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                            </div>
+
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn1 bg-primary3">update</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            @endforeach
+            @endif
+
+
+
+
+            </tbody>
+            </table>
         </div>
+
+    </div>
+    <!-- /.card -->
+
+    <!-- /.card -->
+    </div>
     </div>
 @endsection

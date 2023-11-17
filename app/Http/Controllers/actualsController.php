@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\actual;
+use App\Models\nortification;
 use App\Models\target;
 use App\Models\quarter;
 use App\Models\rejected_actual;
 use App\Models\target_status;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -67,23 +69,35 @@ class actualsController extends Controller
         actuals.created_by,
         actuals.document_path,
         actuals.actual_description,
-        target_statuses.status_code,
         quarters.quarter_name,
-        years.`year`
+        years.`year`,
+        targets.department_id,
+        target_statuses.status_code
     FROM
         targets
         INNER JOIN actuals ON targets.target_id = actuals.target_id
-        INNER JOIN target_statuses ON targets.target_id <> target_statuses.target_id
+        INNER JOIN years ON targets.year_id = years.year_id
         INNER JOIN quarters ON actuals.quarter_id = quarters.quarter_id
-        INNER JOIN years ON quarters.year_id = years.year_id
+        AND years.year_id = quarters.year_id
+        AND actuals.quarter_id = quarters.quarter_id
+        INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
     WHERE
         targets.department_id = $department_id
         AND target_statuses.status_code <> 0
+        AND actuals.`status` = 0
     ORDER BY
         actuals.actual_id DESC");
 
 
+        session()->forget('nortifications');
+        session()->forget('nortification_count');
 
+
+        $nortifications = nortification::where('recipients', $user->user_id)->get();
+        foreach ($nortifications as $nortification) {
+            $nortification->status = '1';
+            $nortification->save();
+        }
 
 
         return view('user.approveActual')->with([
@@ -128,6 +142,18 @@ class actualsController extends Controller
             $actual->year_id = $year_id;
             $actual->created_by = $user;
             $actual->save();
+
+            $recipient = User::where('department_id', $department_id)->where('role_id', 3)->where('status', 1)->first();
+
+            if ($recipient) {
+                $nortification = new nortification();
+
+                $nortification->message = "<p><b>Work Approval</b></p><p>some work has been uploaded padding your approval.</p><p> <a class='pl-3 p-0' href='actualsToApprove' >Click&nbsp;here&nbsp;</a></p>";
+
+                $nortification->recipients = $recipient->user_id;
+                $nortification->sender = Auth::user()->user_id;
+                $nortification->save();
+            }
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {
                 return redirect()->back()->with([
@@ -145,13 +171,12 @@ class actualsController extends Controller
         }
 
 
-        $actuals = actual::join('targets', 'targets.target_id', '=', 'actuals.target_id')->join('quarters', 'quarters.quarter_id', '=', 'actuals.quarter_id')->where('actuals.target_id', $target_id)
-            ->orderby('actual_id', 'desc')->get();
-        $quaters = quarter::where('year_id', $year_id)->get();
+        // $actuals = actual::join('targets', 'targets.target_id', '=', 'actuals.target_id')->join('quarters', 'quarters.quarter_id', '=', 'actuals.quarter_id')->where('actuals.target_id', $target_id)
+        //     ->orderby('actual_id', 'desc')->get();
+        // $quaters = quarter::where('year_id', $year_id)->get();
 
         return redirect()->back()->with([
-            'actuals' => $actuals,
-            'quarters' => $quaters,
+
             'message' => 'actuals uploaded successfully!',
             'status' => 'success'
         ]);
@@ -197,6 +222,7 @@ class actualsController extends Controller
 
     public function approve_reject(Request $request)
     {
+
         $request->validate(['actual_id' => 'required|numeric', 'status' => 'required|numeric']);
         $actual_id = $request['actual_id'];
         $status = $request['status'];
@@ -215,7 +241,7 @@ class actualsController extends Controller
 
         $actual->status = $status;
         $actual->approved_by = $user_email;
-        $actual->updated();
+        $actual->update();
 
         return redirect()->back();
     }

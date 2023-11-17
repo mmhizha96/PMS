@@ -37,6 +37,7 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
         $user = user::where('email', $credentials['email'])->first();
+        if( $user)
         if ($user->status == 0) {
             return back()->withErrors([
                 'email' => 'account deactivated contact your administrator for more.',

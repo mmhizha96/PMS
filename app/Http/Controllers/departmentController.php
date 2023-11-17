@@ -6,11 +6,13 @@ use App\Models\department;
 use Illuminate\Http\Request;
 
 use Illuminate\Database\QueryException;
-
+use App\Http\Controllers\Traits;
 class departmentController extends Controller
 {
+    use Traits\nortification_trait;
     public function store(Request $request)
     {
+
         $request->validate(['department_name' => 'required|string', 'phone' => 'required', 'extension' => 'required']);
 
         $department = new department();
@@ -109,7 +111,7 @@ class departmentController extends Controller
     }
     public function getDepartments()
     {
-
+        $this->fetchNortification();
         $departments =  department::all();
 
         return view('admin.departments')->with(['departments' => $departments]);

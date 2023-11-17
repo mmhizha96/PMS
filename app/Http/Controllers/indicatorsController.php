@@ -4,12 +4,24 @@ namespace App\Http\Controllers;
 
 
 use App\Models\indicator;
-use Illuminate\Database\QueryException;
+use App\Models\department;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Traits;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
 
 class indicatorsController extends Controller
 {
+    use Traits\nortification_trait;
+
+    public function setDepartmentQuick()
+    {
+        session()->put('department_id', "all");
+        session()->put('department_name', "All Departments");
+
+        return redirect('indicators');
+    }
+
 
     public function setDepartment(Request $request)
     {
@@ -30,14 +42,19 @@ class indicatorsController extends Controller
 
     public function getIndicators()
     {
-    
+
         $department_id = (Auth::user()->role_id == 1) ? session()->get('department_id') : Auth::user()->department_id;
 
-        $indicators = indicator::where('department_id', $department_id)->get();
-
+        $indicators = indicator::where('department_id', $department_id)->orderby('indicator_id', 'desc')->get();
+        $departments = department::all();
+        if (session()->get('department_id') == 'all') {
+            $indicators = indicator::orderby('indicator_id', 'desc')->get();
+        }
+        $this->fetchNortification();
         return view('admin.indicators')->with([
             'indicators' => $indicators,
-            'department_id' => $department_id
+            'departments' => $departments
+
         ]);
     }
 
@@ -45,8 +62,8 @@ class indicatorsController extends Controller
     {
 
 
-        $request->validate(['indicator' => 'required', 'description' => 'required',]);
-        $department_id = session()->get('department_id');
+        $request->validate(['indicator' => 'required', 'description' => 'required', 'department_id' => 'required']);
+        $department_id = $request['department_id'];
         $kpn_number = indicator::count();
         $request['kpn_number'] = $kpn_number + 1;
 
