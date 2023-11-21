@@ -27,25 +27,18 @@ class yearController extends Controller
             $year::create($request->toArray());
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {
-                return redirect()->back()->with([
+                toastr()->error('Oops! year already exists');
 
-                    'errors' => 'year Already Exist',
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Oops! server error');
 
-                    'errors' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
-        $years = year::all();
-        return redirect()->back()->with([
-            'years' => $years,
-            'message' => 'year created successfully!',
-            'status' => 'success'
-        ]);
+        toastr()->success('year created successfully');
+
+        return redirect()->back();
     }
     public function destroy(Request $request)
     {
@@ -58,25 +51,41 @@ class yearController extends Controller
             $year->delete();
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1451) {
-                return redirect()->back()->with([
 
-                    'errors' => 'year cannot be deleted',
-                    'status' => 'success'
-                ]);
+                toastr()->error('year cannot be deleted');
+
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Oops! server error');
 
-                    'errors' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
 
-        $years = year::all();
-        return redirect()->back()->with([
-            'years' => $years,
-            'message' => 'year deleted successfully!',
-            'status' => 'success'
-        ]);
+        toastr()->success('year deleted successfully');
+
+        return redirect()->back();
+    }
+
+
+    public function activate_deactivate(Request $request)
+    {
+        $request->validate(['year_id' => 'required|numeric', 'status' => 'required|numeric']);
+
+        $year = year::find($request['year_id']);
+
+        // when user want to activate deactivate any active year
+        if ($request['status'] == 1) {
+            $year_active = year::where('status', 1)->first();
+            if ($year_active) {
+                toastr()->error("Ooops! there is another active year please deactivate it first");
+                return redirect()->back();
+            }
+        }
+        $year->status = $request['status'];
+        $year->update();
+
+        toastr()->success("update successful");
+        return redirect()->back();
     }
 }

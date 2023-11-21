@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Database\QueryException;
 use App\Http\Controllers\Traits;
+
 class departmentController extends Controller
 {
     use Traits\nortification_trait;
@@ -21,26 +22,19 @@ class departmentController extends Controller
             $department::create($request->toArray());
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {
-                return redirect()->back()->with([
+                toastr()->error('Ooops! department already exists!');
 
-                    'errors' => 'department Already Exist',
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Ooops! error occured!');
 
-                    'errors' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
 
-        $departments = department::all();
-        return redirect()->back()->with([
-            'departments' => $departments,
-            'message' => 'department added successfully!',
-            'status' => 'success'
-        ]);
+        toastr()->success(' successfully created!');
+
+        return redirect()->back();
     }
 
     public function update(Request $request)
@@ -57,26 +51,18 @@ class departmentController extends Controller
             $department->update();
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {
-                return redirect()->back()->with([
+                toastr()->error('Ooops! department already exists!');
 
-                    'errors' => 'department Already Exist',
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Ooops! error occured!');
 
-                    'errors' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
+        toastr()->success(' successfully updated!');
 
-        $departments = department::all();
-        return redirect()->back()->with([
-            'departments' => $departments,
-            'message' => 'department updated successfully!',
-            'status' => 'success'
-        ]);
+        return redirect()->back();
     }
 
     public function destroy(Request $request)
@@ -89,29 +75,22 @@ class departmentController extends Controller
             $departments->delete();
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1451) {
-                return redirect()->back()->with([
+                toastr()->error('Ooops! item cannot be deleted because its being used by other parts of the system!');
 
-                    'errors' => 'item cannot be deleted because its being used by other parts of the system',
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             } else {
-            return redirect()->back()->with([
+                toastr()->error('Ooops! error occured!');
 
-                'errors' => $ex->getMessage(),
-                'status' => 'success'
-            ]);
+                return redirect()->back();
+            }
         }
-        }
-        $departments = department::all();
-        return redirect()->back()->with([
-            'departments' => $departments,
-            'message' => 'department deleted successfully!',
-            'status' => 'success'
-        ]);
+        toastr()->success(' successfully deleted!');
+
+        return redirect()->back();
     }
     public function getDepartments()
     {
-        $this->fetchNortification();
+
         $departments =  department::all();
 
         return view('admin.departments')->with(['departments' => $departments]);

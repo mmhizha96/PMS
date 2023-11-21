@@ -20,7 +20,7 @@ class dashboardController extends Controller
 
 
 
-        $this->fetchNortification();
+
         $users = User::count();
         $departments = department::count();
         $targets = target::count();
@@ -31,8 +31,15 @@ class dashboardController extends Controller
 
         $targets_reports_bachart = DB::select("SELECT
         targets.target_value,
-        ( SELECT COALESCE ( SUM( actuals.actual_value ), 0 ) FROM actuals WHERE actuals.target_id = targets.target_id and
-                                    actuals.`status`=1 ) AS total_actuals,
+        (
+        SELECT COALESCE
+            ( SUM( actuals.actual_value ), 0 )
+        FROM
+            actuals
+        WHERE
+            actuals.target_id = targets.target_id
+            AND actuals.`status` = 1
+        ) AS total_actuals,
         departments.department_name,
         departments.department_id,
     CASE
@@ -44,8 +51,8 @@ class dashboardController extends Controller
                 FROM
                     actuals
                 WHERE
-                    actuals.target_id = targets.target_id and
-                                    actuals.`status`=1
+                    actuals.target_id = targets.target_id
+                    AND actuals.`status` = 1
                 )= 0
                 ) THEN
                 'achieved'
@@ -56,8 +63,8 @@ class dashboardController extends Controller
                     FROM
                         actuals
                     WHERE
-                        actuals.target_id = targets.target_id and
-                                    actuals.`status`=1
+                        actuals.target_id = targets.target_id
+                        AND actuals.`status` = 1
                     ) > 0
                     ) THEN
                     'not_achieved' ELSE 'over_achieved'
@@ -72,8 +79,8 @@ class dashboardController extends Controller
                             FROM
                                 actuals
                             WHERE
-                                actuals.target_id = targets.target_id and
-                                    actuals.`status`=1
+                                actuals.target_id = targets.target_id
+                                AND actuals.`status` = 1
                             )= 0
                             ) THEN
                             'achieved'
@@ -84,8 +91,8 @@ class dashboardController extends Controller
                                 FROM
                                     actuals
                                 WHERE
-                                    actuals.target_id = targets.target_id and
-                                    actuals.`status`=1
+                                    actuals.target_id = targets.target_id
+                                    AND actuals.`status` = 1
                                 ) > 0
                                 ) THEN
                                 'not_achieved' ELSE 'over_achieved'
@@ -95,8 +102,9 @@ class dashboardController extends Controller
                             indicators
                             INNER JOIN targets ON indicators.indicator_id = targets.indicator_id
                             INNER JOIN departments ON indicators.department_id = departments.department_id
+                            INNER JOIN years ON targets.year_id = years.year_id
                         WHERE
-                            targets.year_id = $year_id
+                            `years`.`status` = 1
                         GROUP BY
                         department_name,
         decision");
@@ -173,8 +181,9 @@ class dashboardController extends Controller
                         FROM
                             indicators
                             INNER JOIN targets ON indicators.indicator_id = targets.indicator_id
+														INNER JOIN years on years.year_id=targets.year_id
                         WHERE
-                            targets.year_id = $year_id
+                            years.status=1
                     GROUP BY
         decision
 	");
@@ -196,7 +205,7 @@ class dashboardController extends Controller
 
     public function userhome()
     {
-        $this->fetchNortification();
+
         $department_id = Auth::user()->department_id;
         $year_id = (session()->get('filteryear_id') != null) ? session()->get('filteryear_id') :  year::max('year_id');
         $targets = target::where('department_id', $department_id)->where('year_id', $year_id)->count();
@@ -215,8 +224,9 @@ class dashboardController extends Controller
         indicators
         INNER JOIN targets ON indicators.indicator_id = targets.indicator_id
         LEFT JOIN actuals ON targets.target_id = actuals.target_id
-    WHERE
-        targets.year_id = $year_id
+        INNER JOIN years on years.year_id=targets.year_id
+                        WHERE
+                            years.status=1
         AND targets.department_id = $department_id
     GROUP BY
         targets.target_id,
@@ -292,8 +302,9 @@ CASE
                 FROM
                     indicators
                     INNER JOIN targets ON indicators.indicator_id = targets.indicator_id
-                WHERE
-                    targets.year_id = $year_id and
+                    INNER JOIN years on years.year_id=targets.year_id
+                        WHERE
+                            years.status=1 and
                     targets.department_id=$department_id
             GROUP BY
 decision");

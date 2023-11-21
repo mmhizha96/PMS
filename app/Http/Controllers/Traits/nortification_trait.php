@@ -18,5 +18,7 @@ trait nortification_trait
 
         session()->put("nortifications", $nortifications->get());
         session()->put("nortification_count", $nortifications->count());
+
+        return response()->json(["count" => $nortifications->count(), "nortifications" => $nortifications->get()]);
     }
 }

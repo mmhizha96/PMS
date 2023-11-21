@@ -27,7 +27,7 @@
 
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
-                    <div class="small-box bg-primary4">
+                    <div class="small-box" style="background-color: #A2C579">
                         <div class="inner">
                             <h3>
                                 @if ($departments_total)
@@ -235,7 +235,7 @@
             labels: pieComment,
             datasets: [{
                 data: pieTotal,
-                backgroundColor: ['#fcc425', '#838339', '#618429'],
+                backgroundColor: ['#D2DE32', '#838339', '#618429'],
             }]
         }
         var donutOptions = {
@@ -259,7 +259,7 @@
                 labels: departments,
                 datasets: [{
                     label: 'not_achieved',
-                    backgroundColor: '#fcc425',
+                    backgroundColor: '#D2DE32',
                     data: not_achieved,
                 }, {
                     label: 'achieved',

@@ -231,7 +231,7 @@
             labels: pieComment,
             datasets: [{
                 data: pieTotal,
-                backgroundColor: ['#fcc425', '#838339', '#618429'],
+                backgroundColor: ['#A2C579', '#838339', '#618429'],
             }]
         }
         var donutOptions = {

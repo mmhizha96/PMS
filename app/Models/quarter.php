@@ -14,5 +14,5 @@ class quarter extends Model
     protected $casts = [
         'start_date' => 'datetime', 'end_date' => 'datetime',
     ];
-    protected $fillable = ['quarter_name', 'year_id', 'start_date', 'end_date'];
+    protected $fillable = ['quarter_name', 'year_id', 'start_date', 'end_date', 'status'];
 }

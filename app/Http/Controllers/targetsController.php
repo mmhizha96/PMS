@@ -58,13 +58,22 @@ class targetsController extends Controller
                 SUM( actuals.expenditure ) AS total_expenditure,
                 SUM( actuals.actual_value ) AS total_actuals,
                 target_status_codes.`status`,
-                target_status_codes.status_code
+                target_status_codes.status_code,
+                years.year,
+                departments.department_name
             FROM
                 targets
                 LEFT JOIN actuals ON targets.target_id = actuals.target_id
                 INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
                 INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
-
+                INNER JOIN
+	years
+	ON
+		targets.year_id = years.year_id
+        INNER JOIN
+	departments
+	ON
+		targets.department_id = departments.department_id
             GROUP BY
                 targets.target_id
             ORDER BY
@@ -77,11 +86,21 @@ class targetsController extends Controller
         SUM( actuals.actual_value ) AS total_actuals,
         target_status_codes.`status`,
         target_status_codes.status_code
+        ,        years.year,
+                departments.department_name
     FROM
         targets
         LEFT JOIN actuals ON targets.target_id = actuals.target_id
         INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
         INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
+        INNER JOIN
+	years
+	ON
+		targets.year_id = years.year_id
+        INNER JOIN
+	departments
+	ON
+		targets.department_id = departments.department_id
     WHERE
         targets.indicator_id = $indicator_id
     GROUP BY
@@ -101,11 +120,21 @@ class targetsController extends Controller
                 SUM( actuals.actual_value ) AS total_actuals,
                 target_status_codes.`status`,
                 target_status_codes.status_code
+                ,        years.year,
+                departments.department_name
             FROM
                 targets
                 LEFT JOIN actuals ON targets.target_id = actuals.target_id
                 INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
                 INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
+                INNER JOIN
+	years
+	ON
+		targets.year_id = years.year_id
+        INNER JOIN
+	departments
+	ON
+		targets.department_id = departments.department_id
             WHERE
                 targets.department_id = $department_id
             GROUP BY
@@ -120,11 +149,21 @@ class targetsController extends Controller
         SUM( actuals.actual_value ) AS total_actuals,
         target_status_codes.`status`,
         target_status_codes.status_code
+        ,        years.year,
+                departments.department_name
     FROM
         targets
         LEFT JOIN actuals ON targets.target_id = actuals.target_id
         INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
         INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
+        INNER JOIN
+	years
+	ON
+		targets.year_id = years.year_id
+        INNER JOIN
+	departments
+	ON
+		targets.department_id = departments.department_id
     WHERE
         targets.indicator_id = $indicator_id
     GROUP BY
@@ -171,28 +210,23 @@ class targetsController extends Controller
             $target_status->save();
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {
-                return redirect()->back()->with([
 
-                    'error' => 'target Already Exist',
-                    'status' => 'success'
-                ]);
+                toastr()->error('Oops! target Already Exist');
+
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Oops! server error!');
 
-                    'error' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
 
 
 
 
-        return redirect()->back()->with([
+        toastr()->success(' successfully created!');
 
-            'message' => 'targets created successfully!',
-            'status' => 'success'
-        ]);
+        return redirect()->back();
     }
 
     public function update(Request $request)
@@ -215,28 +249,21 @@ class targetsController extends Controller
             $target->update();
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {
-                return redirect()->back()->with([
 
-                    'error' => 'target Already Exist',
-                    'status' => 'success'
-                ]);
+                toastr()->error('Oops! target Already Exist');
+
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Oops! server error');
 
-                    'error' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
 
 
+        toastr()->success(' targets created successfully!');
 
-
-        return redirect()->back()->with([
-
-            'message' => 'targets created successfully!',
-            'status' => 'success'
-        ]);
+        return redirect()->back();
     }
 
     public function delete(Request $request)
@@ -252,28 +279,21 @@ class targetsController extends Controller
             $target->delete();
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1451) {
-                return redirect()->back()->with([
+                toastr()->error('Oops! item cannot be deleted because its being used by other parts of the system');
 
-                    'error' => 'item cannot be deleted because its being used by other parts of the system',
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Oops! server error');
 
-                    'error' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
 
 
 
+        toastr()->success(' targets deleted successfully!');
 
-        return redirect()->back()->with([
-
-            'message' => 'targets deleted successfully!',
-            'status' => 'success'
-        ]);
+        return redirect()->back();
     }
 
 
@@ -311,21 +331,27 @@ class targetsController extends Controller
         } else if ($total_actuals < $target_value) {
 
             if ($request['reason_for_deviation'] == null) {
-                return redirect()->back()->with([
+                toastr()->error('Oops! reason for deviation is required');
 
-                    'errors' => 'reason for deviation is required',
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
 
 
-        $target_status =  target_status::where('target_id', $target_id)->first();
-        $target->corrective_action = $corrective_action;
+        try {
+            $target_status =  target_status::where('target_id', $target_id)->first();
+            $target->corrective_action = $corrective_action;
 
-        $target_status->status_code = $status;
-        $target_status->reason_for_deviation = $reason_for_deviation;
-        $target_status->update();
+            $target_status->status_code = $status;
+            $target_status->reason_for_deviation = $reason_for_deviation;
+            $target_status->update();
+        } catch (QueryException $ex) {
+            toastr()->error('Oops! server error');
+
+            return redirect()->back();
+        }
+
+        toastr()->success(' targets deleted successfully!');
 
         return redirect()->back();
     }

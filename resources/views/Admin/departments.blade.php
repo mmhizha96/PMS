@@ -2,26 +2,7 @@
 @section('content')
     <div class="row mt-2 container-fluid"">
         <div class="col-md-12 container-fluid">
-            @if (session('message'))
-                <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
-                    x-transition:leave.duration.3000ms>
-                    <div class="col-md-12">
-                        <div class="alert bg-primary1 text-white" role="alert">
-                            {{ session('message') }}
-                        </div>
-                    </div>
-                </div>
-            @endif
-            @if (session('errors'))
-                <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
-                    x-transition:leave.duration.3000ms>
-                    <div class="col-md-12">
-                        <div class="alert bg-danger text-white" role="alert">
-                            {{ session('errors') }}
-                        </div>
-                    </div>
-                </div>
-            @endif
+         
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">New Department</h3>
@@ -51,14 +32,8 @@
 
                                 <div class="col-md-6 form-group">
                                     <label>Department Name</label>
-                                    <input type="text" class="form-control"
-                                        @error('department_name') is-invalid @enderror name="department_name"
-                                        placeholder="department name">
-                                    @error('department_name')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                    <input type="text" class="form-control" name="department_name">
+
 
                                 </div>
 
@@ -70,24 +45,13 @@
 
                                 <div class="col-md-6 form-group">
                                     <label for="">Phone</label>
-                                    <input type="number" class="form-control" @error('phone') is-invalid @enderror
-                                        name="phone" placeholder="phone">
-                                    @error('phone')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                    <input type="number" class="form-control" name="phone" placeholder="phone">
 
                                 </div>
                                 <div class="col-md-6 form-group">
                                     <label>Extension</label>
-                                    <input type="text" class="form-control" @error('extension') is-invalid @enderror
-                                        name="extension" placeholder="extension">
-                                    @error('extension')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                    <input type="text" class="form-control" name="extension" placeholder="extension">
+
 
                                 </div>
 
@@ -181,8 +145,8 @@
                                                                 <input type="hidden" name="department_id"
                                                                     value="{{ $dept->department_id }}">
                                                                 <input type="text" value="{{ $dept->department_name }}"
-                                                                    class="form-control @error('name') is-invalid @enderror"
-                                                                    name="department_name" placeholder="department name">
+                                                                    class="form-control" name="department_name"
+                                                                    placeholder="department name">
 
                                                             </div>
 
@@ -195,16 +159,15 @@
                                                             <div class="col-md-6 form-group">
                                                                 <label for="">Phone</label>
                                                                 <input type="number" value="{{ $dept->phone }}"
-                                                                    class="form-control @error('name') is-invalid @enderror"
-                                                                    name="phone" placeholder="phone">
+                                                                    class="form-control" name="phone" placeholder="phone">
 
 
                                                             </div>
                                                             <div class="col-md-6 form-group">
                                                                 <label>Extension</label>
                                                                 <input type="text" value="{{ $dept->extension }}"
-                                                                    class="form-control @error('extension') is-invalid @enderror"
-                                                                    name="extension" placeholder="extension">
+                                                                    class="form-control" name="extension"
+                                                                    placeholder="extension">
 
 
                                                             </div>

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>PMS</title>
-
+    <base href="/">
     <link rel="icon" type="image/x-icon" href=" img/logo.jpeg">
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
 
@@ -33,7 +33,8 @@
     <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-
+    <!-- CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.0/css/toastr.css" rel="stylesheet" />
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -100,6 +101,8 @@
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.0/js/toastr.js"></script>
 
     <script>
         $(function() {
@@ -125,7 +128,46 @@
 
         });
     </script>
+    <script>
+        $(document).ready(function() {
+            toastr.options.timeOut = 5000;
+            @if (Session::has('errors'))
 
+                @foreach (Session::get('errors')->toArray() as $errors)
+                    @foreach ($errors as $error)
+                        toastr.error('{{ $error }}')
+                    @endforeach
+                @endforeach
+            @elseif (Session::has('success'))
+                toastr.success('{{ Session::get('success') }}');
+            @endif
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            /*------------------------------------------
+            --------------------------------------------
+            When click user on Show Button
+            --------------------------------------------
+            --------------------------------------------*/
+
+
+
+
+            $.ajax({
+                url: "{{ route('fetch_nortification') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // toastr.success('nortifications loaded');
+                }
+            });
+
+
+
+        });
+    </script>
 </body>
 
 </html>

@@ -34,18 +34,13 @@ class usersController extends Controller
         try {
             $user::create($request->toArray());
         } catch (QueryException $ex) {
-            return redirect()->back()->with([
+            toastr()->error('Oops! server error');
 
-                'errors' => $ex->getMessage(),
-                'status' => 'success'
-            ]);
+            return redirect()->back();
         }
+        toastr()->success(' user created successfully');
 
-        return redirect()->back()->with([
-
-            'message' => 'user created successfully!',
-            'status' => 'success'
-        ]);
+        return redirect()->back();
     }
 
 
@@ -61,17 +56,13 @@ class usersController extends Controller
             $user->phone = $request['phone'];
             $user->update();
         } catch (QueryException $ex) {
-            return redirect()->back()->with([
+            toastr()->error('Oops! server error');
 
-                'errors' => $ex->getMessage(),
-                'status' => 'success'
-            ]);
+            return redirect()->back();
         }
-        return redirect()->back()->with([
+        toastr()->success(' user updated successfully');
 
-            'message' => 'user updated successfully!',
-            'status' => 'success'
-        ]);
+        return redirect()->back();
     }
 
     public function activate_deactivate(Request $request)
@@ -83,16 +74,13 @@ class usersController extends Controller
             $user->status = ($request['status'] == 1) ? 0 : 1;
             $user->update();
         } catch (QueryException  $ex) {
-            return redirect()->back()->with([
+            toastr()->error('Oops! server error');
 
-                'errors' => $ex->getMessage(),
-                'status' => 'success'
-            ]);
+            return redirect()->back();
         }
-        return redirect()->back()->with([
+        toastr()->success(' user updated successfully');
 
-            'message' => 'user updated successfully!',
-            'status' => 'success'
-        ]);
+        return redirect()->back();
+
     }
 }

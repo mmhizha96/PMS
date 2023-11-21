@@ -2,26 +2,7 @@
 @section('content')
     <div class="row mt-2 container-fluid">
         <div class="col-md-12 ">
-            @if (session('message'))
-                <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
-                    x-transition:leave.duration.3000ms>
-                    <div class="col-md-12">
-                        <div class="alert bg-primary1 text-white" role="alert">
-                            {{ session('message') }}
-                        </div>
-                    </div>
-                </div>
-            @endif
-            @if (session('errors'))
-                <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
-                    x-transition:leave.duration.3000ms>
-                    <div class="col-md-12">
-                        <div class="alert bg-danger text-white" role="alert">
-                            {{ session('errors') }}
-                        </div>
-                    </div>
-                </div>
-            @endif
+
 
             @if (Auth::user()->role_id == 1)
                 <div class="card">
@@ -152,7 +133,7 @@
                                 <th>Indicator</th>
 
                                 <th>Description</th>
-
+                                <th>Department</th>
                                 <th>Date Created </th>
                                 <th>Actions</th>
                             </tr>
@@ -164,6 +145,7 @@
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $indicator->indicator }}</td>
                                         <td>{{ $indicator->description }}</td>
+                                        <td>{{ $indicator->department_name }}</td>
                                         <td>{{ $indicator->created_at }}</td>
 
                                         <td>

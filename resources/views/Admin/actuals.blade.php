@@ -2,26 +2,8 @@
 @section('content')
     <div class="row mt-2 container-fluid">
         <div class="col-md-12 ">
-            @if (session('message'))
-                <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
-                    x-transition:leave.duration.3000ms>
-                    <div class="col-md-12">
-                        <div class="alert bg-primary1 text-white" role="alert">
-                            {{ session('message') }}
-                        </div>
-                    </div>
-                </div>
-            @endif
-            @if (session('errors'))
-                <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
-                    x-transition:leave.duration.3000ms>
-                    <div class="col-md-12">
-                        <div class="alert bg-danger text-white" role="alert">
-                            {{ session('errors') }}
-                        </div>
-                    </div>
-                </div>
-            @endif
+
+     
             <div class="card">
                 <div class="card-header">
 
@@ -57,8 +39,7 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <form role="form" method="post" action="{{ route('create_actual') }}"
-                            enctype="multipart/form-data">
+                        <form method="post" action="{{ route('create_actual') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 <div class="row">
@@ -66,23 +47,27 @@
 
                                     <div class="col-md-6 form-group">
                                         <label>Actual Description</label>
-                                        <input type="text" class="form-control" name="actual_description"
-                                            id="exampleInputEmail1">
+                                        <input type="text" class="form-control" name="actual_description">
+
 
                                     </div>
 
                                     <div class="col-md-6 form-group">
                                         <label>Quarter</label>
-                                        <select name="quarter_id" class="form-control">
+                                        <select name="quarter_id" class="form-control" disabled>
+                                            <option>select quarter</option>
                                             @if ($quarters)
                                                 @foreach ($quarters as $quarter)
-                                                    <option value="{{ $quarter->quarter_id }}">{{ $quarter->quarter_name }}
+                                                    <option value="{{ $quarter->quarter_id }}"
+                                                        {{ $quarter->status == '1' ? 'selected' : '' }}>
+                                                        {{ $quarter->quarter_name }}
                                                     </option>
                                                 @endforeach
                                             @endif
 
 
                                         </select>
+
 
 
 
@@ -97,14 +82,12 @@
 
                                     <div class="col-md-6 form-group">
                                         <label>Expenditure</label>
-                                        <input type="number" class="form-control" name="expenditure"
-                                            id="exampleInputEmail1">
+                                        <input type="number" class="form-control" name="expenditure">
 
                                     </div>
                                     <div class="col-md-6 form-group">
                                         <label>Actual Perfomance</label>
-                                        <input type="number" class="form-control" name="actual_value"
-                                            id="exampleInputEmail1">
+                                        <input type="number" class="form-control" name="actual_value">
 
                                     </div>
 
@@ -115,7 +98,7 @@
                                     <div class="col-md-6 form-group">
                                         <label>File</label>
                                         <input type="file" class="form-control" name="file"
-                                            accept=".pdf,.xlx,.csv,.docx" id="exampleInputEmail1">
+                                            accept=".pdf,.xlx,.csv,.docx">
 
                                     </div>
 

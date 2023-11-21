@@ -11,5 +11,5 @@ class year extends Model
 
     protected $table = 'years';
     protected $primaryKey = 'year_id';
-    protected $fillable = ['year'];
+    protected $fillable = ['year', 'status'];
 }

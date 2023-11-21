@@ -5,7 +5,7 @@
           <li class="nav-item">
               <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
           </li>
-          <h5 class="mt-2">Perfomance Management System</h5>
+          <h5 class="mt-2">HYBRID OFFICE SPACE</h5>
       </ul>
 
 
@@ -28,7 +28,6 @@
               @if (session('nortifications'))
                   <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                       @foreach (session('nortifications') as $nortification)
-                  
                           <a href="#" class="dropdown-item">
                               <!-- Message Start -->
 
@@ -90,3 +89,5 @@
       </ul>
   </nav>
   <!-- /.navbar -->
+
+

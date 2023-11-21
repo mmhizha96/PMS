@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\departmentController;
 use App\Http\Controllers\indicatorsController;
+use App\Http\Controllers\nortificationsController;
 use App\Http\Controllers\quartersController;
 use App\Http\Controllers\reportsController;
 use App\Http\Controllers\targetsController;
@@ -44,6 +45,7 @@ Route::group(['middleware' => ['auth', 'pass_change']], function () {
 
 
         Route::get('/years', [yearController::class, 'getYears'])->name('years');
+        Route::post('/year/activate-deactivate', [yearController::class, 'activate_deactivate'])->name('activate_deactivate_year');
 
         Route::post('/years/create', [yearController::class, 'store'])->name('create_year');
         Route::post('/year/delete', [yearController::class, 'destroy'])->name('delete_year');
@@ -61,6 +63,7 @@ Route::group(['middleware' => ['auth', 'pass_change']], function () {
         Route::post('/quarter/create', [quartersController::class, 'store'])->name('create_quarter');
         Route::post('/quarter/update', [quartersController::class, 'update'])->name('update_quarter');
         Route::post('/quarter/delete', [quartersController::class, 'destroy'])->name('delete_quarter');
+        Route::post('/quarters/activate-deactivate', [quartersController::class, 'activate_deactivate'])->name('activate_deactivate_quarter');
         Route::get('/users', [usersController::class, 'getUsers'])->name('users');
         Route::post('/create_users', [usersController::class, 'create_User'])->name('create_user');
         Route::post('/update_users', [usersController::class, 'update_users'])->name('update_users');
@@ -118,3 +121,5 @@ Route::get('/reset_password_view', [AuthController::class, 'promtChangePass'])->
 Route::post('/reset_password', [AuthController::class, 'reset_password'])->name('reset_password');
 
 Route::get('/forgot_password', [AuthController::class, 'forget_password'])->name('forgot_password');
+
+Route::get('/fetchnortification', [nortificationsController::class, 'fetch'])->name('fetch_nortification');

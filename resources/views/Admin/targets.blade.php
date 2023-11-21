@@ -2,36 +2,7 @@
 @section('content')
     <div class="row mt-2">
         <div class="col-md-12 container">
-            @if (session('message'))
-                <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
-                    x-transition:leave.duration.3000ms>
-                    <div class="col-md-12">
-                        <div class="alert bg-primary1 text-white" role="alert">
-                            {{ session('message') }}
-                        </div>
-                    </div>
-                </div>
-            @endif
-            @if (session('errors'))
-                <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
-                    x-transition:leave.duration.3000ms>
-                    <div class="col-md-12">
-                        <div class="alert bg-danger text-white" role="alert">
-                            {{ session('errors') }}
-                        </div>
-                    </div>
-                </div>
-            @endif
-            @if (session('error'))
-                <div class="row" id="success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show"
-                    x-transition:leave.duration.3000ms>
-                    <div class="col-md-12">
-                        <div class="alert bg-danger text-white" role="alert">
-                            {{ session('error') }}
-                        </div>
-                    </div>
-                </div>
-            @endif
+
             <div class="card">
                 <div class="card-header">
 
@@ -163,7 +134,7 @@
                                     <div class="col-md-6 form-group">
                                         <label for="">Department</label>
                                         <select name="department_id" class="form-control">
-                                            <option >select department</option>
+                                            <option>select department</option>
                                             @foreach ($departments as $department)
                                                 <option value="{{ $department->department_id }}"
                                                     {{ $department->department_id == session('department_id') ? 'selected' : '' }}>
@@ -174,7 +145,7 @@
                                     <div class="col-md-6 form-group">
                                         <label for="">Indicator</label>
                                         <select name="indicator_id" class="form-control">
-                                            <option >select indicator</option>
+                                            <option>select indicator</option>
                                             @foreach ($indicators as $indicator)
                                                 <option value="{{ $indicator->indicator_id }}"
                                                     {{ $indicator->indicator_id == session('indicator_id') ? 'selected' : '' }}>
@@ -250,7 +221,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 10px">#</th>
-
+                                <th>Department</th>
                                 <th>Target Description</th>
                                 <th>Budget</th>
                                 <th>Target Value</th>
@@ -259,6 +230,7 @@
                                 <th> Expendidure Progress </th>
                                 <th>progress status</th>
                                 <th>status</th>
+                                <th>year</th>
                                 <th>action</th>
 
                             </tr>
@@ -270,6 +242,7 @@
                                 @foreach ($targets as $key => $target)
                                     <tr>
                                         <td>{{ $key }}</td>
+                                        <td>{{ $target->department_name }}</td>
                                         <td> {{ $target->target_description }}</td>
                                         <td>
                                             @if ($target->budget_value == 0)
@@ -327,6 +300,9 @@
                                             @else
                                                 over achived
                                             @endif
+                                        </td>
+                                        <td>
+                                            {{ $target->year }}
                                         </td>
                                         <td>
                                             <div class="btn-group">

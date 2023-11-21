@@ -45,12 +45,14 @@ class indicatorsController extends Controller
 
         $department_id = (Auth::user()->role_id == 1) ? session()->get('department_id') : Auth::user()->department_id;
 
-        $indicators = indicator::where('department_id', $department_id)->orderby('indicator_id', 'desc')->get();
+        $indicators = indicator::join('departments', 'departments.department_id', '=', 'indicators.department_id')->where('departments.department_id', $department_id)->orderby('indicator_id', 'desc')->get();
         $departments = department::all();
         if (session()->get('department_id') == 'all') {
-            $indicators = indicator::orderby('indicator_id', 'desc')->get();
+            $indicators = indicator::join('departments', 'departments.department_id', '=', 'indicators.department_id')->orderby('indicator_id', 'desc')->get();
         }
-        $this->fetchNortification();
+
+        // Display an error toast with no title
+
         return view('admin.indicators')->with([
             'indicators' => $indicators,
             'departments' => $departments
@@ -73,28 +75,21 @@ class indicatorsController extends Controller
             $indicator::create($request->toArray());
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {
-                return redirect()->back()->with([
+                toastr()->error('Ooops! indicator already exists!');
 
-                    'errors' => 'indicator Already Exist',
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Oops! server error!');
 
-                    'errors' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
 
 
 
-        $indicators = $indicator = indicator::where('department_id', $department_id)->get();
-        return redirect()->back()->with([
-            'indicators' => $indicators,
-            'message' => 'indicator created successfully!',
-            'status' => 'success'
-        ]);
+        toastr()->success(' successfully created!');
+
+        return redirect()->back();
     }
 
     public function update(Request $request)
@@ -102,7 +97,7 @@ class indicatorsController extends Controller
 
 
         // $request->validate(['indicator' => 'required', 'description' => 'required', 'indicator_id' => 'required']);
-        $department_id = session()->get('department_id');
+
         $indicator_id = $request['indicator_id'];
         $indicator = indicator::find($indicator_id);
 
@@ -112,28 +107,21 @@ class indicatorsController extends Controller
             $indicator->update();
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {
-                return redirect()->back()->with([
+                toastr()->error('Ooops! indicator already exists!');
 
-                    'errors' => 'indicator Already Exist',
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Oops! server error!');
 
-                    'errors' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
 
 
 
-        $indicators = $indicator = indicator::where('department_id', $department_id)->get();
-        return redirect()->back()->with([
-            'indicators' => $indicators,
-            'message' => 'indicator updated successfully!',
-            'status' => 'success'
-        ]);
+        toastr()->success(' successfully created!');
+
+        return redirect()->back();
     }
 
     public function delete(Request $request)
@@ -149,26 +137,21 @@ class indicatorsController extends Controller
             $indicator->delete();
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1451) {
-                return redirect()->back()->with([
+                toastr()->error('Ooops! item cannot be deleted because its being used by other parts of the system!');
 
-                    'errors' => 'item cannot be deleted because its being used by other parts of the system',
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Oops! server error!');
 
-                    'errors' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
 
 
         $indicators = $indicator = indicator::where('department_id', $department_id)->get();
-        return redirect()->back()->with([
-            'indicators' => $indicators,
-            'message' => 'indicator deleted successfully!',
-            'status' => 'success'
-        ]);
+
+        toastr()->success('indicator deleted successfully!');
+
+        return redirect()->back();
     }
 }

@@ -23,7 +23,7 @@ class quartersController extends Controller
     }
     public function getQuaters()
     {
-        $this->fetchNortification();
+
 
         $year_id = session()->get('year_id');
 
@@ -46,32 +46,25 @@ class quartersController extends Controller
             $quater->create($data);
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {
-                return redirect()->back()->with([
+                toastr()->error('Oops! quater already exists');
 
-                    'errors' => 'quater Already Exist',
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Oops! server error!');
 
-                    'errors' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
-        $quaters = quarter::where('year_id', $year_id)->get();
-        return redirect()->back()->with([
-            'quarters' =>  $quaters,
-            'message' => 'indicator created successfully!',
-            'status' => 'success'
-        ]);
+        toastr()->success(' successfully created!');
+
+        return redirect()->back();
     }
     public function  update(Request $request)
     {
         $request->validate(['quarter_name' => 'required', 'start_date' => 'required', 'end_date' => 'required', 'quarter_id' => 'required']);
         $quarter_name = $request->input('quarter_name');
         $quarter_id = $request->input('quarter_id');
-        $year_id =  session()->get('year_id');
+
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
 
@@ -84,25 +77,18 @@ class quartersController extends Controller
             $quarter->update();
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {
-                return redirect()->back()->with([
+                toastr()->error('Oops! quater already exists');
 
-                    'errors' => 'quater Already Exist',
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Oops! server error!');
 
-                    'errors' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
-        $quaters = quarter::where('year_id', $year_id)->get();
-        return redirect()->back()->with([
-            'quarters' =>  $quaters,
-            'message' => 'indicator updated successfully!',
-            'status' => 'success'
-        ]);
+        toastr()->success(' successfully created!');
+
+        return redirect()->back();
     }
     public function  destroy(Request $request)
     {
@@ -114,25 +100,40 @@ class quartersController extends Controller
             $quarter->delete();
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1451) {
-                return redirect()->back()->with([
 
-                    'errors' => 'item cannot be deleted because its being used by other parts of the system',
-                    'status' => 'success'
-                ]);
+                toastr()->error('Oops! item cannot be deleted because its being used by other parts of the system');
+
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
+                toastr()->error('Oops! server error!');
 
-                    'errors' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                return redirect()->back();
             }
         }
 
-        $quaters = quarter::where('year_id', $year_id)->get();
-        return redirect()->back()->with([
-            'quarters' =>  $quaters,
-            'message' => 'indicator deleted successfully!',
-            'status' => 'success'
-        ]);
+        toastr()->success(' successfully created!');
+
+        return redirect()->back();
+    }
+    public function activate_deactivate(Request $request){
+        $request->validate(['quarter_id' => 'required|numeric','status'=>'required|numeric']);
+
+if($request['status']==1){
+    // deactivate active first
+
+    $quarter_active=quarter::where('status',1)->first();
+    if($quarter_active){
+        toastr()->error("Oops! another acgtive quater found please deactivate first");
+        return redirect()->back();
+    }
+
+}
+$quarter=quarter::find($request['quarter_id']);
+$quarter->status=$request['status'];
+$quarter->update();
+
+        toastr()->success(' successfully updated!');
+
+        return redirect()->back();
     }
 }

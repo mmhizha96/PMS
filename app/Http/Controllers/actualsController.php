@@ -111,12 +111,25 @@ class actualsController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate(['file' => 'required|mimes:pdf,xlx,csv,doc|max:2048', 'expenditure' => 'required', 'quarter_id' => 'required', 'actual_value' => 'required', 'actual_description' => 'required']);
+        $request->validate(['file' => 'required|mimes:pdf,xlx,csv,doc|max:2048', 'expenditure' => 'required',  'actual_value' => 'required', 'actual_description' => 'required']);
 
         $target_id = session()->get('target_id');
         $year_id = session()->get('year_id');
         $department_id =     session()->get('department_id');
         $user =     Auth::user()->email;
+        $quarter_active=quarter::where('status',1)->first();
+$expenditure=$request->input('expenditure');
+$actual_value=$request['actual_value'];
+
+if($actual_value<0||$expenditure<0){
+    toastr()->error("Oops! actual value or expenditure can't be less tha 0");
+    return redirect()->back();
+}
+
+        if(!$quarter_active){
+            toastr()->error("Oops! there is no active quarter currently");
+            return redirect()->back();
+        }
 
 
 
@@ -132,9 +145,9 @@ class actualsController extends Controller
 
             $actual->actual_description = $request->input('actual_description');
             $actual->document_path = $fileName;
-            $actual->actual_value = $request->input('actual_value');
-            $actual->expenditure = $request->input('expenditure');
-            $actual->quarter_id = $request->input('quarter_id');
+            $actual->actual_value = $actual_value;
+            $actual->expenditure = $expenditure;
+            $actual->quarter_id = $quarter_active->quarter_id;
             $actual->department_id = $department_id;
             $actual->target_id = $target_id;
             $actual->status = 0;
@@ -156,30 +169,19 @@ class actualsController extends Controller
             }
         } catch (QueryException $ex) {
             if ($ex->errorInfo[1] == 1062) {
-                return redirect()->back()->with([
 
-                    'errors' => 'actual Already Exist',
-                    'status' => 'success'
-                ]);
+                toastr()->error('Oops! actual_name Already Exist!');
+                return redirect()->back();
             } else {
-                return redirect()->back()->with([
-
-                    'errors' => $ex->getMessage(),
-                    'status' => 'success'
-                ]);
+                toastr()->error('Oops! server error!');
+                return redirect()->back();
             }
         }
 
 
-        // $actuals = actual::join('targets', 'targets.target_id', '=', 'actuals.target_id')->join('quarters', 'quarters.quarter_id', '=', 'actuals.quarter_id')->where('actuals.target_id', $target_id)
-        //     ->orderby('actual_id', 'desc')->get();
-        // $quaters = quarter::where('year_id', $year_id)->get();
 
-        return redirect()->back()->with([
-
-            'message' => 'actuals uploaded successfully!',
-            'status' => 'success'
-        ]);
+        toastr()->success('actuals uploaded successfully!');
+        return redirect()->back();
     }
 
 
@@ -199,11 +201,8 @@ class actualsController extends Controller
             $actual->delete();
         } catch (QueryException $ex) {
 
-            return redirect()->back()->with([
-
-                'errors' => $ex->getMessage(),
-                'status' => 'success'
-            ]);
+            toastr()->error('Oops! server error!');
+            return redirect()->back();
         }
 
 
@@ -213,11 +212,8 @@ class actualsController extends Controller
             ->orderby('actual_id', 'desc')->get();
         $quaters = quarter::where('year_id', $year_id)->get();
 
-        return redirect()->back()->with([
-            'actuals' => $actuals,
-            'message' => 'actuals uploaded successfully!',
-            'status' => 'success'
-        ]);
+        toastr()->success('deleted successfully!');
+        return redirect()->back();
     }
 
     public function approve_reject(Request $request)
@@ -228,20 +224,28 @@ class actualsController extends Controller
         $status = $request['status'];
         $user_email = Auth::user()->email;
 
-        if ($status == 2) {
-            $request->validate(['reason_for_rejection' => 'required|string']);
+        try {
+            if ($status == 2) {
+                $request->validate(['reason_for_rejection' => 'required|string']);
 
-            $rejected_actual = new rejected_actual();
-            $rejected_actual->reason = $request['reason_for_rejection'];
-            $rejected_actual->actual_id = $actual_id;
-            $rejected_actual->rejected_by = $user_email;
-            $rejected_actual->save();
+                $rejected_actual = new rejected_actual();
+                $rejected_actual->reason = $request['reason_for_rejection'];
+                $rejected_actual->actual_id = $actual_id;
+                $rejected_actual->rejected_by = $user_email;
+                $rejected_actual->save();
+            }
+            $actual = actual::find($actual_id);
+
+            $actual->status = $status;
+            $actual->approved_by = $user_email;
+            $actual->update();
+        } catch (QueryException $ex) {
+            toastr()->error('server error!');
+
+            return redirect()->back();
         }
-        $actual = actual::find($actual_id);
 
-        $actual->status = $status;
-        $actual->approved_by = $user_email;
-        $actual->update();
+        toastr()->success('succesfully uploaded!');
 
         return redirect()->back();
     }
