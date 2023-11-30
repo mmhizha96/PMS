@@ -125,17 +125,16 @@
                     </div>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body table-responsive " style="height: 300px;">
-                    <table id="example1" class="table table-head-fixed">
+                <div class="card-body ">
+                    <table id="example1" class="table table-stripped table-hover">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Indicator</th>
-
-                                <th>Description</th>
-                                <th>Department</th>
-                                <th>Date Created </th>
-                                <th>Actions</th>
+                                <th data-priority="2">#</th>
+                                <th data-priority="0">Indicator</th>
+                                <th data-priority="2">Description</th>
+                                <th data-priority="3">Department</th>
+                                <th data-priority="5">Date Created </th>
+                                <th data-priority="0">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -149,24 +148,58 @@
                                         <td>{{ $indicator->created_at }}</td>
 
                                         <td>
-                                            <form action="{{ route('set_indicator') }}" class="btn btn-sm" method="post">
-                                                @csrf
-                                                <input type="hidden" name="description" value="{{ $indicator->description }}">
-                                                <input type="hidden" name="indicator" value="{{ $indicator->indicator }}">
-                                                <input type="hidden" name="indicator_id"
-                                                    value="{{ $indicator->indicator_id }}">
-                                                <button class="btn btn-sm bg-primary2" type="submit">targets</button>
-                                            </form>
-                                            @if (Auth::user()->role_id == 1)
-                                                <button class="btn btn-sm bg-primary4" data-toggle="modal"
-                                                    data-target="#modal-update{{ $key }}">update</button>
-                                                <button class="btn btn-sm bg-primary3" data-toggle="modal"
-                                                    data-target="#modal-delete{{ $key }}">delete</button>
-                                            @endif
+
+
+                                            <div class="btn-group">
+                                                <svg width="35px" data-toggle="dropdown" viewBox="-0.5 0 25 25" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                        stroke-linejoin="round"></g>
+                                                    <g id="SVGRepo_iconCarrier">
+                                                        <path
+                                                            d="M12 14.5C13.1046 14.5 14 13.6046 14 12.5C14 11.3954 13.1046 10.5 12 10.5C10.8954 10.5 10 11.3954 10 12.5C10 13.6046 10.8954 14.5 12 14.5Z"
+                                                            stroke="#0F0F0F" stroke-miterlimit="10"></path>
+                                                        <path
+                                                            d="M19.5 14.5C20.6046 14.5 21.5 13.6046 21.5 12.5C21.5 11.3954 20.6046 10.5 19.5 10.5C18.3954 10.5 17.5 11.3954 17.5 12.5C17.5 13.6046 18.3954 14.5 19.5 14.5Z"
+                                                            stroke="#0F0F0F" stroke-miterlimit="10"></path>
+                                                        <path
+                                                            d="M4.5 14.5C5.60457 14.5 6.5 13.6046 6.5 12.5C6.5 11.3954 5.60457 10.5 4.5 10.5C3.39543 10.5 2.5 11.3954 2.5 12.5C2.5 13.6046 3.39543 14.5 4.5 14.5Z"
+                                                            stroke="#0F0F0F" stroke-miterlimit="10"></path>
+                                                    </g>
+                                                </svg>
+
+                                                <span class="sr-only">Toggle Dropdown</span>
+
+                                                <div class="dropdown-menu" style="margin-right: 70px" role="menu">
+
+                                                    <form action="{{ route('set_indicator') }}" style="width: 100%"
+                                                        method="post">
+                                                        @csrf
+                                                        <input type="hidden" name="description"
+                                                            value="{{ $indicator->description }}">
+                                                        <input type="hidden" name="indicator"
+                                                            value="{{ $indicator->indicator }}">
+                                                        <input type="hidden" name="indicator_id"
+                                                            value="{{ $indicator->indicator_id }}">
+                                                        <button style="text-align: left" class="btn btn-sm form-control"
+                                                            type="submit">Targets</button>
+                                                    </form>
+                                                    @if (Auth::user()->role_id == 1)
+                                                        <button class="btn btn-sm dropdown-item" data-toggle="modal"
+                                                            data-target="#modal-update{{ $key }}">Update</button>
+                                                        <button class="btn btn-sm dropdown-item" data-toggle="modal"
+                                                            data-target="#modal-delete{{ $key }}">Delete</button>
+                                                    @endif
+
+                                                </div>
+
+
 
 
 
                                         </td>
+
                                     </tr>
 
                                     <div class="modal fade" id="modal-delete{{ $key }}">

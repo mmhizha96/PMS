@@ -42,137 +42,147 @@ class targetsController extends Controller
 
 
         $indicator_id = session()->get('indicator_id');
-
-        $targets = "";
-
-
         $indicators = indicator::orderby('indicator_id', 'desc')->get();
         $departments = department::orderby('department_id', 'desc')->get();
         $years = year::orderby('year_id', 'desc')->get();
-        if (Auth::user()->role_id == 1) {
+        $targets = "";
+        $yearactive = year::where('status', 1)->first();
+        if ($yearactive) {
+            $year_id = $yearactive->year_id;
+            if (Auth::user()->role_id == 1) {
 
-            if ($indicator_id == 'all') {
+                if ($indicator_id == 'all') {
 
-                $targets = DB::select("SELECT
-                targets.*,
-                SUM( actuals.expenditure ) AS total_expenditure,
-                SUM( actuals.actual_value ) AS total_actuals,
-                target_status_codes.`status`,
-                target_status_codes.status_code,
-                years.year,
-                departments.department_name
-            FROM
-                targets
-                LEFT JOIN actuals ON targets.target_id = actuals.target_id
-                INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
-                INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
-                INNER JOIN
-	years
-	ON
-		targets.year_id = years.year_id
-        INNER JOIN
-	departments
-	ON
-		targets.department_id = departments.department_id
-            GROUP BY
-                targets.target_id
-            ORDER BY
-                targets.target_id DESC");
-            } else {
-
-                $targets = DB::select("SELECT
+                    $targets = DB::select("SELECT
         targets.*,
         SUM( actuals.expenditure ) AS total_expenditure,
         SUM( actuals.actual_value ) AS total_actuals,
         target_status_codes.`status`,
-        target_status_codes.status_code
-        ,        years.year,
-                departments.department_name
+        target_status_codes.status_code,
+        years.year,
+        departments.department_name
     FROM
         targets
         LEFT JOIN actuals ON targets.target_id = actuals.target_id
         INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
         INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
         INNER JOIN
-	years
-	ON
-		targets.year_id = years.year_id
-        INNER JOIN
-	departments
-	ON
-		targets.department_id = departments.department_id
-    WHERE
-        targets.indicator_id = $indicator_id
+years
+ON
+targets.year_id = years.year_id
+INNER JOIN
+departments
+ON
+targets.department_id = departments.department_id
+
+where targets.year_id=$year_id
     GROUP BY
         targets.target_id
     ORDER BY
-        targets.target_id DESC
-        ");
+        targets.target_id DESC");
+                } else {
+
+                    $targets = DB::select("SELECT
+targets.*,
+SUM( actuals.expenditure ) AS total_expenditure,
+SUM( actuals.actual_value ) AS total_actuals,
+target_status_codes.`status`,
+target_status_codes.status_code
+,        years.year,
+        departments.department_name
+FROM
+targets
+LEFT JOIN actuals ON targets.target_id = actuals.target_id
+INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
+INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
+INNER JOIN
+years
+ON
+targets.year_id = years.year_id
+INNER JOIN
+departments
+ON
+targets.department_id = departments.department_id
+WHERE
+targets.indicator_id = $indicator_id
+AND   targets.year_id=$year_id
+GROUP BY
+targets.target_id
+ORDER BY
+targets.target_id DESC
+");
+                }
+            } else {
+                if ($indicator_id == 'all') {
+
+                    $department_id = Auth::user()->department_id;
+
+                    $targets = DB::select("SELECT
+        targets.*,
+        SUM( actuals.expenditure ) AS total_expenditure,
+        SUM( actuals.actual_value ) AS total_actuals,
+        target_status_codes.`status`,
+        target_status_codes.status_code
+        ,        years.year,
+        departments.department_name
+    FROM
+        targets
+        LEFT JOIN actuals ON targets.target_id = actuals.target_id
+        INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
+        INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
+        INNER JOIN
+years
+ON
+targets.year_id = years.year_id
+INNER JOIN
+departments
+ON
+targets.department_id = departments.department_id
+    WHERE
+        targets.department_id = $department_id AND targets.year_id=$year_id
+    GROUP BY
+        targets.target_id
+    ORDER BY
+        targets.target_id DESC");
+                } else {
+
+                    $targets = DB::select("SELECT
+targets.*,
+SUM( actuals.expenditure ) AS total_expenditure,
+SUM( actuals.actual_value ) AS total_actuals,
+target_status_codes.`status`,
+target_status_codes.status_code
+,        years.year,
+        departments.department_name
+FROM
+targets
+LEFT JOIN actuals ON targets.target_id = actuals.target_id
+INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
+INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
+INNER JOIN
+years
+ON
+targets.year_id = years.year_id
+INNER JOIN
+departments
+ON
+targets.department_id = departments.department_id
+WHERE
+targets.indicator_id = $indicator_id and targets.year_id=$year_id
+GROUP BY
+targets.target_id
+ORDER BY
+targets.target_id DESC
+");
+                }
             }
         } else {
-            if ($indicator_id == 'all') {
+            toastr()->error("there is no active year set ");
 
-                $department_id = Auth::user()->department_id;
-
-                $targets = DB::select("SELECT
-                targets.*,
-                SUM( actuals.expenditure ) AS total_expenditure,
-                SUM( actuals.actual_value ) AS total_actuals,
-                target_status_codes.`status`,
-                target_status_codes.status_code
-                ,        years.year,
-                departments.department_name
-            FROM
-                targets
-                LEFT JOIN actuals ON targets.target_id = actuals.target_id
-                INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
-                INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
-                INNER JOIN
-	years
-	ON
-		targets.year_id = years.year_id
-        INNER JOIN
-	departments
-	ON
-		targets.department_id = departments.department_id
-            WHERE
-                targets.department_id = $department_id
-            GROUP BY
-                targets.target_id
-            ORDER BY
-                targets.target_id DESC");
-            } else {
-
-                $targets = DB::select("SELECT
-        targets.*,
-        SUM( actuals.expenditure ) AS total_expenditure,
-        SUM( actuals.actual_value ) AS total_actuals,
-        target_status_codes.`status`,
-        target_status_codes.status_code
-        ,        years.year,
-                departments.department_name
-    FROM
-        targets
-        LEFT JOIN actuals ON targets.target_id = actuals.target_id
-        INNER JOIN target_statuses ON targets.target_id = target_statuses.target_id
-        INNER JOIN target_status_codes ON target_statuses.status_code = target_status_codes.status_code
-        INNER JOIN
-	years
-	ON
-		targets.year_id = years.year_id
-        INNER JOIN
-	departments
-	ON
-		targets.department_id = departments.department_id
-    WHERE
-        targets.indicator_id = $indicator_id
-    GROUP BY
-        targets.target_id
-    ORDER BY
-        targets.target_id DESC
-        ");
-            }
         }
+
+
+
 
 
 

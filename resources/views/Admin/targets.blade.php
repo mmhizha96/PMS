@@ -9,7 +9,7 @@
                     <div class="card-tools">
                         <a type="button" href="{{ route('indicators') }}" class="btn btn-tool bg-dark"><i
                                 class="fas fa-arrow-left"></i>
-                            back
+                            Back
                         </a>
 
                     </div>
@@ -217,21 +217,20 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered">
+                    <table id="example1" class="table table-stripped table-hover">
                         <thead>
                             <tr>
-                                <th style="width: 10px">#</th>
+                                <th data-priority="7">#</th>
                                 <th>Department</th>
                                 <th>Target Description</th>
                                 <th>Budget</th>
                                 <th>Target Value</th>
-                                <th> Actual Progress </th>
-
-                                <th> Expendidure Progress </th>
+                                <th>Actual Progress </th>
+                                <th>Expendidure Progress </th>
                                 <th>progress status</th>
                                 <th>status</th>
                                 <th>year</th>
-                                <th>action</th>
+                                <th data-priority="1">action</th>
 
                             </tr>
                         </thead>
@@ -332,15 +331,15 @@
                                                     @if ($target->status_code == 1)
                                                         <button class="btn btn-sm p-1 "data-toggle="modal"
                                                             data-target="#mark_as_finished{{ $key }}">
-                                                            mark as complete</button>
+                                                            Mark as complete</button>
                                                     @endif
                                                     @if (Auth::user()->role_id == 1)
                                                         <button class="btn btn-sm p-1 dropdown-item " data-toggle="modal"
-                                                            data-target="#modal-update{{ $key }}">update</button>
+                                                            data-target="#modal-update{{ $key }}">Update</button>
                                                         <button class="btn btn-sm p-1 dropdown-item " data-toggle="modal"
-                                                            data-target="#modal-delete{{ $key }}">delete</button>
+                                                            data-target="#modal-delete{{ $key }}">Delete</button>
                                                     @endif
-                                                    <form action="{{ route('set_target') }}" class="btn btn-sm"
+                                                    <form action="{{ route('set_target') }}" style="width: 100%"
                                                         method="post">
                                                         @csrf
                                                         <input type="hidden" name="target_description"
@@ -351,9 +350,11 @@
                                                             value="{{ $target->year_id }}">
                                                         <input type="hidden" name="department_id"
                                                             value="{{ $target->department_id }}">
-                                                        <button class="btn btn-sm dropdown-item p-0 m-0 bg-white "
+                                                        <button class="btn text-left dropdown-item bg-white form-control"
                                                             type="submit">Actuals</button>
                                                     </form>
+                                                </div>
+                                            </div>
                                         </td>
 
 
