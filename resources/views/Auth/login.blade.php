@@ -1,4 +1,4 @@
-@extends('auth.layouts')
+@extends('Auth.layouts')
 
 @section('content')
     {{-- new login --}}
