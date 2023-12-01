@@ -80,7 +80,7 @@ class AuthController extends Controller
 
     public function forget_password()
     {
-        return view('auth.resert_password');
+        return view('Auth.resert_password');
     }
 
     public function logout(Request $request)
