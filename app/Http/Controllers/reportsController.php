@@ -116,7 +116,7 @@ class reportsController extends Controller
             indicators.indicator_id");
         }
         session()->remove('filteryear_id');
-        return view('admin.reports')->with([
+        return view('Admin.reports')->with([
             'reportData' =>   $quater_report,
             'years' => $years
 
@@ -249,7 +249,7 @@ GROUP BY
         }
 
         session()->remove('filteryear_id');
-        return view('admin.yearlyreport')->with([
+        return view('Admin.yearlyreport')->with([
             'reportData' => $yearly_report,
             'years' => $years
 

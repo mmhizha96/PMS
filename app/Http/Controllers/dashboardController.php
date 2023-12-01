@@ -189,7 +189,7 @@ class dashboardController extends Controller
 	");
 
 
-        return view('admin.home')->with(
+        return view('Admin.home')->with(
             [
                 'users_total' => $users,
                 'departments_total' => $departments,

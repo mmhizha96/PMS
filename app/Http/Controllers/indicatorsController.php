@@ -53,7 +53,7 @@ class indicatorsController extends Controller
 
         // Display an error toast with no title
 
-        return view('admin.indicators')->with([
+        return view('Admin.indicators')->with([
             'indicators' => $indicators,
             'departments' => $departments
 

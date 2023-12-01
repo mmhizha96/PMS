@@ -93,6 +93,6 @@ class departmentController extends Controller
 
         $departments =  department::all();
 
-        return view('admin.departments')->with(['departments' => $departments]);
+        return view('Admin.departments')->with(['departments' => $departments]);
     }
 }

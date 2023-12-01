@@ -29,7 +29,7 @@ class quartersController extends Controller
 
         $quaters = quarter::where('year_id', $year_id)->get();
 
-        return view('admin.quaters')->with([
+        return view('Admin.quaters')->with([
             'quarters' => $quaters,
 
         ]);

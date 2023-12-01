@@ -187,7 +187,7 @@ targets.target_id DESC
 
 
 
-        return view('admin.targets')->with([
+        return view('Admin.targets')->with([
             'targets' => $targets,
             'indicators' => $indicators,
             'departments' => $departments,

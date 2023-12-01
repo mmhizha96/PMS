@@ -13,7 +13,7 @@ class yearController extends Controller
     public function getYears()
     {
         $years = year::all();
-        return view('admin.years')->with(['years' => $years]);
+        return view('Admin.years')->with(['years' => $years]);
     }
 
 

@@ -46,7 +46,7 @@ class actualsController extends Controller
 
 
 
-        return view('admin.actuals')->with([
+        return view('Admin.actuals')->with([
             'actuals' => $actuals,
             'quarters' => $quaters
 

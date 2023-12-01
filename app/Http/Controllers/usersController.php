@@ -21,7 +21,7 @@ class usersController extends Controller
 
 
 
-        return view('admin.users')->with(['users' => $users, 'roles' => $roles, 'departments' => $departments]);
+        return view('Admin.users')->with(['users' => $users, 'roles' => $roles, 'departments' => $departments]);
     }
 
     public function create_User(Request $request)
