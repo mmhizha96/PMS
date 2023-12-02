@@ -329,7 +329,7 @@
 
 
                                                     @if ($target->status_code == 1)
-                                                        <button class="btn btn-sm p-1 "data-toggle="modal"
+                                                        <button class="btn btn-sm p-1 dropdown-item"data-toggle="modal"
                                                             data-target="#mark_as_finished{{ $key }}">
                                                             Mark as complete</button>
                                                     @endif

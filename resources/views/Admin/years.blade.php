@@ -71,7 +71,7 @@
                                 <th>#</th>
                                 <th>Year</th>
                                 <th>status</th>
-                                <th>Actions</th>
+                                <th data-priority="1">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,21 +82,63 @@
                                         <td>{{ $year->year }}</td>
                                         <td>{{ $year->status }}</td>
                                         <td>
-                                            <form action="{{ route('set_year') }}" class="btn btn-sm" method="post">
-                                                @csrf
-                                                <input type="hidden" name="year" value="{{ $year->year }}">
-                                                <input type="hidden" name="year_id" value="{{ $year->year_id }}">
-                                                <button class="btn btn-sm bg-primary2" type="submit">Quaters</button>
-                                            </form>
-                                            <button class="btn btn-sm bg-danger" data-toggle="modal"
-                                                data-target="#modal-delete{{ $key }}">delete</button>
-                                            @if ($year->status == 1)
-                                                <button class="btn btn-sm btn-warning" data-toggle="modal"
-                                                    data-target="#modal-deactivate{{ $key }}">deactivate</button>
-                                            @elseif ($year->status == 0)
-                                                <button class="btn btn-sm bg-primary1" data-toggle="modal"
-                                                    data-target="#modal-activate{{ $key }}">Activate</button>
-                                            @endif
+                                            <div class="btn-group">
+                                                <svg width="35px" data-toggle="dropdown" viewBox="-0.5 0 25 25" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                        stroke-linejoin="round"></g>
+                                                    <g id="SVGRepo_iconCarrier">
+                                                        <path
+                                                            d="M12 14.5C13.1046 14.5 14 13.6046 14 12.5C14 11.3954 13.1046 10.5 12 10.5C10.8954 10.5 10 11.3954 10 12.5C10 13.6046 10.8954 14.5 12 14.5Z"
+                                                            stroke="#0F0F0F" stroke-miterlimit="10"></path>
+                                                        <path
+                                                            d="M19.5 14.5C20.6046 14.5 21.5 13.6046 21.5 12.5C21.5 11.3954 20.6046 10.5 19.5 10.5C18.3954 10.5 17.5 11.3954 17.5 12.5C17.5 13.6046 18.3954 14.5 19.5 14.5Z"
+                                                            stroke="#0F0F0F" stroke-miterlimit="10"></path>
+                                                        <path
+                                                            d="M4.5 14.5C5.60457 14.5 6.5 13.6046 6.5 12.5C6.5 11.3954 5.60457 10.5 4.5 10.5C3.39543 10.5 2.5 11.3954 2.5 12.5C2.5 13.6046 3.39543 14.5 4.5 14.5Z"
+                                                            stroke="#0F0F0F" stroke-miterlimit="10"></path>
+                                                    </g>
+                                                </svg>
+
+                                                <span class="sr-only">Toggle Dropdown</span>
+
+                                                <div class="dropdown-menu" style="margin-right: 70px" role="menu">
+
+
+                                                    <form action="{{ route('set_year') }}" style="width: 100%"
+                                                        class="btn btn-sm" method="post">
+                                                        @csrf
+                                                        <input type="hidden" name="year" value="{{ $year->year }}">
+                                                        <input type="hidden" name="year_id" value="{{ $year->year_id }}">
+                                                        <button style="text-align: left"
+                                                            class="btn btn-sm form-control dropdown-item"
+                                                            type="submit">Quaters</button>
+                                                    </form>
+                                                    <button class="btn btn-sm  dropdown-item" data-toggle="modal"
+                                                        data-target="#modal-delete{{ $key }}">Delete</button>
+                                                    @if ($year->status == 1)
+                                                        <button class="btn btn-sm dropdown-item" data-toggle="modal"
+                                                            data-target="#modal-deactivate{{ $key }}">Deactivate</button>
+                                                    @elseif ($year->status == 0)
+                                                        <button class="btn btn-sm dropdown-item " data-toggle="modal"
+                                                            data-target="#modal-activate{{ $key }}">Activate</button>
+                                                    @endif
+
+                                                </div>
+                                            </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                                         </td>
