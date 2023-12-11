@@ -15,11 +15,11 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie','*'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ["http://pms-production-805e.up.railway.app",'*'],
+    'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => [],
 
