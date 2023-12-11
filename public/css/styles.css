@@ -1,0 +1,70 @@
+.bg-primary1 {
+    background-color: #8bbd3a;
+}
+
+.text-primary1 {
+    color: #8bbd3a;
+}
+
+.text-italic {
+    font-style: italic;
+}
+
+.strong-txt {
+    font-weight: 6px !important;
+
+}
+
+.bg-primary2 {
+    background-color: #838339;
+}
+
+.bg-primary3 {
+    background-color: #618429;
+}
+
+.bg-primary4 {
+    background-color: #fcc425;
+}
+
+.text-dark {
+    color: #2b5c2f;
+}
+
+.text-warning {
+    color: #fcc425 !important;
+
+}
+
+#nmessage .dropdown-item{
+    border-top: solid 2px ;
+    border-color: rgb(rgb(118, 118, 118), green, blue);
+    padding: 5px;
+}
+
+#nmessage h5 {
+    font-size: 0.9rem;
+    padding: 0px;
+
+}
+
+.message,
+.message-footer {
+    font-size: 0.8rem;
+    padding: 1px;
+
+}
+
+.message-footer {
+    color: #fff;
+    background-color: #618429;
+    border-radius: 5px;
+    text-align: center;
+    margin-left: 20px;
+    padding: 2px;
+}
+
+.message-footer:hover {
+    text-decoration: underline;
+    padding: 4px;
+}
