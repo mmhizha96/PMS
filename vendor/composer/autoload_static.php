@@ -553,6 +553,7 @@ class ComposerStaticInit3b4a6621a58b914ab1e3f5088c808a67
         'App\\Http\\Controllers\\dashboardController' => __DIR__ . '/../..' . '/app/Http/Controllers/dashboardController.php',
         'App\\Http\\Controllers\\departmentController' => __DIR__ . '/../..' . '/app/Http/Controllers/departmentController.php',
         'App\\Http\\Controllers\\indicatorsController' => __DIR__ . '/../..' . '/app/Http/Controllers/indicatorsController.php',
+        'App\\Http\\Controllers\\nortificationsController' => __DIR__ . '/../..' . '/app/Http/Controllers/nortificationsController.php',
         'App\\Http\\Controllers\\quartersController' => __DIR__ . '/../..' . '/app/Http/Controllers/quartersController.php',
         'App\\Http\\Controllers\\reportsController' => __DIR__ . '/../..' . '/app/Http/Controllers/reportsController.php',
         'App\\Http\\Controllers\\targetsController' => __DIR__ . '/../..' . '/app/Http/Controllers/targetsController.php',

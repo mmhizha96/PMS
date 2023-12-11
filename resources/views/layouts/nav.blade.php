@@ -87,21 +87,22 @@
               url: "{{ route('fetch_nortification') }}",
               type: 'GET',
               dataType: 'json',
+              allow: "*",
               success: function(data) {
-toastr.success("ashdhs");
+                  toastr.success("ashdhs");
                   $('#ncount').html(data.count);
 
-                loop=true;
-                var i=0;
-                  while(i<data.nortifications.length&&loop){
-                    nortification=data.nortifications[i];
-                    $('#nmessage').append(
+                  loop = true;
+                  var i = 0;
+                  while (i < data.nortifications.length && loop) {
+                      nortification = data.nortifications[i];
+                      $('#nmessage').append(
                           "<a href='#' class='dropdown-item'><p  class='text-sm p-2'>" +
                           nortification.message + "  </p></a>");
-                          i++;
-                          if(i>=3){
-    loop=false;
-}
+                      i++;
+                      if (i >= 3) {
+                          loop = false;
+                      }
                   }
 
 
