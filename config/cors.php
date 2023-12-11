@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ["https://pms-production-805e.up.railway.app",'*'],
+    'allowed_origins' => ["http://pms-production-805e.up.railway.app",'*'],
 
     'allowed_origins_patterns' => [],
 
