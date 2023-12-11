@@ -17,33 +17,18 @@
           <li class="nav-item dropdown">
               <a class="nav-link" data-toggle="dropdown" href="#">
                   <i class="far fa-comments"></i>
-                  <span class="badge badge-danger navbar-badge">
-                      @if (session('nortification_count'))
-                          {{ session('nortification_count') }}
-                      @endif
+                  <span id="ncount" class="badge badge-danger navbar-badge">
+
                   </span>
               </a>
 
 
-              @if (session('nortifications'))
-                  <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                      @foreach (session('nortifications') as $nortification)
-                          <a href="#" class="dropdown-item">
-                              <!-- Message Start -->
 
+              <div id="nmessage" class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
 
+                
 
-
-                              <p class="text-sm p-2">{!! $nortification->message !!}</p>
-
-
-
-                              <!-- Message End -->
-                          </a>
-                      @endforeach
-                  </div>
-              @endif
-
+              </div>
 
 
 
@@ -88,4 +73,45 @@
 
       </ul>
   </nav>
+  <!-- jQuery -->
+  <script src="plugins/jquery/jquery.min.js"></script>
+  <!-- jQuery UI 1.11.4 -->
+  <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
+  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
   <!-- /.navbar -->
+  <script type="text/javascript">
+      $(document).ready(function() {
+
+
+          $.ajax({
+              url: "{{ route('fetch_nortification') }}",
+              type: 'GET',
+              dataType: 'json',
+              success: function(data) {
+
+                  $('#ncount').html(data.count);
+
+                loop=true;
+                var i=0;
+                  while(i<data.nortifications.length&&loop){
+                    nortification=data.nortifications[i];
+                    $('#nmessage').append(
+                          "<a href='#' class='dropdown-item'><p  class='text-sm p-2'>" +
+                          nortification.message + "  </p></a>");
+                          i++;
+                          if(i>=3){
+    loop=false;
+}
+                  }
+
+
+
+
+              }
+          });
+
+
+
+
+      });
+  </script>

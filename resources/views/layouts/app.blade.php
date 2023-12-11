@@ -143,31 +143,7 @@
             @endif
         });
     </script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-
-            /*------------------------------------------
-            --------------------------------------------
-            When click user on Show Button
-            --------------------------------------------
-            --------------------------------------------*/
-
-
-
-
-            $.ajax({
-                url: "{{ route('fetch_nortification') }}",
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    // toastr.success('nortifications loaded');
-                }
-            });
-
-
-
-        });
-    </script>
+ 
 </body>
 
 </html>

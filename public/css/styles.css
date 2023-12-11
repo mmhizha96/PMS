@@ -35,3 +35,36 @@
     color: #fcc425 !important;
 
 }
+
+#nmessage .dropdown-item{
+    border-top: solid 2px ;
+    border-color: rgb(rgb(118, 118, 118), green, blue);
+    padding: 5px;
+}
+
+#nmessage h5 {
+    font-size: 0.9rem;
+    padding: 0px;
+
+}
+
+.message,
+.message-footer {
+    font-size: 0.8rem;
+    padding: 1px;
+
+}
+
+.message-footer {
+    color: #fff;
+    background-color: #618429;
+    border-radius: 5px;
+    text-align: center;
+    margin-left: 20px;
+    padding: 2px;
+}
+
+.message-footer:hover {
+    text-decoration: underline;
+    padding: 4px;
+}

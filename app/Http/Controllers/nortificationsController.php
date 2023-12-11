@@ -13,6 +13,7 @@ class nortificationsController extends Controller
 
 
 
-return response()->json($this->fetchNortification());
+return response($this->fetchNortification());
+
     }
 }

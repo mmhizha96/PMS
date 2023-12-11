@@ -14,11 +14,11 @@ trait nortification_trait
     public function fetchNortification()
     {
         $user_id = Auth::user()->user_id;
-        $nortifications = nortification::where('recipients', $user_id)->where('status', 0);
+        $nortifications = nortification::where('recipients', $user_id)->where('status', 0)->orderby('nortification_id', 'desc');
 
         session()->put("nortifications", $nortifications->get());
         session()->put("nortification_count", $nortifications->count());
 
-        return response()->json(["count" => $nortifications->count(), "nortifications" => $nortifications->get()]);
+        return ["count" => $nortifications->count(), "nortifications" => $nortifications->get()];
     }
 }
