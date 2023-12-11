@@ -26,7 +26,7 @@
 
               <div id="nmessage" class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
 
-                
+
 
               </div>
 
@@ -88,7 +88,7 @@
               type: 'GET',
               dataType: 'json',
               success: function(data) {
-
+toastr.success("ashdhs");
                   $('#ncount').html(data.count);
 
                 loop=true;
